@@ -1,12 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { BarChart3, TrendingUp, Globe, Sparkles, Search, Loader2, ArrowLeft, Copy, GitCompare } from 'lucide-react';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { 
+  BarChart3, TrendingUp, Globe, Sparkles, Search, Loader2, ArrowLeft, 
+  Copy, GitCompare, Filter, DollarSign, Users, Target, Award, 
+  TrendingDown, CheckCircle2, XCircle, Lightbulb, AlertTriangle
+} from 'lucide-react';
+import { 
+  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
+  Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, 
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+  AreaChart, Area
+} from 'recharts';
+import { supabase } from '@/integrations/supabase/client';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -15,43 +26,41 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [compareMode, setCompareMode] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
-  const [analysis2, setAnalysis2] = useState<any>(null);
+  const [savedCompanies, setSavedCompanies] = useState<any[]>([]);
+  const [filterIndustry, setFilterIndustry] = useState('all');
+  const [filterRevenue, setFilterRevenue] = useState('all');
   const { toast } = useToast();
 
-  const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', '#8b5cf6', '#06b6d4', '#f59e0b'];
+  const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', '#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444'];
 
-  const generateMockData = (companyName: string, isSecondary = false) => ({
-    companyName,
-    traffic: isSecondary ? "1.8M" : "2.5M",
-    mrr: isSecondary ? "$85K" : "$125K",
-    techStack: isSecondary ? ["Vue", "Express", "MongoDB"] : ["React", "Node.js", "PostgreSQL"],
-    businessModel: "SaaS Subscription",
-    growthRate: isSecondary ? "+22%" : "+35%",
-    domain: { age: isSecondary ? "3 years" : "5 years", authority: isSecondary ? "Medium" : "High" },
-    prompt: `Build a B2B analytics platform focused on e-commerce businesses, offering real-time insights and automated reporting features.`,
-    trafficData: [
-      { month: 'Jan', visitors: isSecondary ? 1.2 : 1.8 },
-      { month: 'Feb', visitors: isSecondary ? 1.4 : 2.0 },
-      { month: 'Mar', visitors: isSecondary ? 1.5 : 2.2 },
-      { month: 'Apr', visitors: isSecondary ? 1.6 : 2.3 },
-      { month: 'May', visitors: isSecondary ? 1.7 : 2.4 },
-      { month: 'Jun', visitors: isSecondary ? 1.8 : 2.5 },
-    ],
-    revenueData: [
-      { month: 'Jan', revenue: isSecondary ? 65 : 95 },
-      { month: 'Feb', revenue: isSecondary ? 70 : 105 },
-      { month: 'Mar', revenue: isSecondary ? 75 : 110 },
-      { month: 'Apr', revenue: isSecondary ? 78 : 115 },
-      { month: 'May', revenue: isSecondary ? 82 : 120 },
-      { month: 'Jun', revenue: isSecondary ? 85 : 125 },
-    ],
-    techDistribution: [
-      { name: 'Frontend', value: 35 },
-      { name: 'Backend', value: 30 },
-      { name: 'Database', value: 20 },
-      { name: 'DevOps', value: 15 },
-    ],
-  });
+  useEffect(() => {
+    loadSavedCompanies();
+  }, []);
+
+  const loadSavedCompanies = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      let query = supabase
+        .from('companies')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      if (filterIndustry !== 'all') {
+        query = query.eq('industry', filterIndustry);
+      }
+
+      const { data, error } = await query;
+      
+      if (error) throw error;
+      setSavedCompanies(data || []);
+    } catch (error) {
+      console.error('Error loading companies:', error);
+    }
+  };
 
   const handleAnalyze = async () => {
     if (!url) {
@@ -65,28 +74,140 @@ const Dashboard = () => {
 
     setLoading(true);
     
-    // Placeholder for AI analysis
-    setTimeout(() => {
-      setAnalysis(generateMockData("Example Corp"));
-      if (compareMode && url2) {
-        setAnalysis2(generateMockData("Competitor Inc", true));
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-company', {
+        body: { 
+          url,
+          compareUrl: compareMode && url2 ? url2 : null
+        }
+      });
+
+      if (error) throw error;
+
+      if (!data.success) {
+        throw new Error(data.error || 'Analysis failed');
       }
-      setLoading(false);
+
+      const analysisData = data.analysis;
+      setAnalysis(analysisData);
+
+      // Save to database
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const companyData = {
+          user_id: user.id,
+          url: url,
+          domain: analysisData.company.domain,
+          name: analysisData.company.name,
+          description: analysisData.company.description,
+          industry: analysisData.company.industry,
+          business_model: analysisData.company.businessModel,
+          tech_stack: Object.values(analysisData.techStack).flat() as string[],
+          traffic_estimate: analysisData.traffic as any,
+          revenue_estimate: analysisData.revenue as any,
+          seo_metrics: analysisData.seo as any,
+          social_presence: analysisData.social as any,
+          growth_metrics: {
+            trafficGrowth: analysisData.traffic.growthRate,
+            revenueGrowth: analysisData.revenue.growthRate
+          } as any,
+          ai_insights: analysisData.aiInsights as any,
+          lovable_prompt: analysisData.lovablePrompt
+        };
+
+        const { error: insertError } = await supabase
+          .from('companies')
+          .insert(companyData);
+
+        if (insertError) {
+          console.error('Error saving analysis:', insertError);
+        } else {
+          loadSavedCompanies();
+        }
+      }
+
       toast({
         title: "Analysis complete!",
-        description: compareMode ? "Company comparison ready." : "Your company insights are ready.",
+        description: "AI-powered insights are ready.",
       });
-    }, 2000);
+    } catch (error: any) {
+      console.error('Analysis error:', error);
+      toast({
+        title: "Analysis failed",
+        description: error.message || "Failed to analyze company. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const copyPrompt = () => {
-    if (analysis?.prompt) {
-      navigator.clipboard.writeText(analysis.prompt);
+    if (analysis?.lovablePrompt) {
+      navigator.clipboard.writeText(analysis.lovablePrompt);
       toast({
         title: "Copied!",
-        description: "Prompt copied to clipboard.",
+        description: "Lovable prompt copied to clipboard.",
       });
     }
+  };
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toString();
+  };
+
+  const formatCurrency = (num: number) => {
+    if (num >= 1000000) return `$${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `$${(num / 1000).toFixed(1)}K`;
+    return `$${num}`;
+  };
+
+  // Generate chart data from analysis
+  const generateTrafficData = () => {
+    if (!analysis) return [];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    const base = analysis.traffic.monthlyVisitors;
+    const growth = analysis.traffic.growthRate / 100;
+    
+    return months.map((month, i) => ({
+      month,
+      visitors: Math.round(base * (1 - growth * (5 - i) / 5) / 1000000 * 10) / 10,
+      pageViews: Math.round(base * (1 - growth * (5 - i) / 5) * 1.5 / 1000000 * 10) / 10
+    }));
+  };
+
+  const generateRevenueData = () => {
+    if (!analysis) return [];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    const mrr = analysis.revenue.estimatedMRR;
+    const growth = analysis.revenue.growthRate / 100;
+    
+    return months.map((month, i) => ({
+      month,
+      mrr: Math.round(mrr * (1 - growth * (5 - i) / 5) / 1000),
+      arr: Math.round(mrr * 12 * (1 - growth * (5 - i) / 5) / 1000)
+    }));
+  };
+
+  const generateTechStackData = () => {
+    if (!analysis) return [];
+    return Object.entries(analysis.techStack).map(([category, tools]: [string, any]) => ({
+      category: category.charAt(0).toUpperCase() + category.slice(1),
+      count: Array.isArray(tools) ? tools.length : 0
+    }));
+  };
+
+  const generateCompetitionRadar = () => {
+    if (!analysis) return [];
+    return [
+      { subject: 'Traffic', value: Math.min(analysis.traffic.monthlyVisitors / 10000, 100) },
+      { subject: 'Revenue', value: Math.min(analysis.revenue.estimatedMRR / 1000, 100) },
+      { subject: 'SEO', value: analysis.seo.domainAuthority },
+      { subject: 'Innovation', value: analysis.aiInsights.innovationScore },
+      { subject: 'Scalability', value: analysis.aiInsights.scalabilityScore },
+    ];
   };
 
   return (
@@ -101,25 +222,25 @@ const Dashboard = () => {
             <div className="flex items-center gap-2">
               <Sparkles className="w-6 h-6 text-primary" />
               <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-[hsl(232,83%,68%)] bg-clip-text text-transparent">
-                CompanyScope
+                CompanyScope AI
               </h1>
             </div>
           </div>
-          <Button variant="ghost">Sign out</Button>
+          <Button variant="ghost" onClick={() => navigate('/auth')}>Sign out</Button>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Search Section */}
-        <Card className="mb-8">
+        <Card className="mb-8 shadow-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Globe className="w-5 h-5" />
-              Analyze a Company
+              AI-Powered Company Analysis
             </CardTitle>
             <CardDescription>
-              Enter any company website URL to get AI-powered insights and business intelligence
+              Enter any company URL to get comprehensive business intelligence, tech stack analysis, and AI-generated insights
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -129,6 +250,7 @@ const Dashboard = () => {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 className="flex-1"
+                disabled={loading}
               />
               <Button 
                 onClick={handleAnalyze} 
@@ -138,12 +260,12 @@ const Dashboard = () => {
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     Analyzing...
                   </>
                 ) : (
                   <>
-                    <Search className="w-4 h-4" />
+                    <Search className="w-4 h-4 mr-2" />
                     Analyze
                   </>
                 )}
@@ -156,11 +278,11 @@ const Dashboard = () => {
                 size="sm"
                 onClick={() => {
                   setCompareMode(!compareMode);
-                  setAnalysis2(null);
                 }}
+                disabled={loading}
               >
-                <GitCompare className="w-4 h-4" />
-                Compare with another company
+                <GitCompare className="w-4 h-4 mr-2" />
+                Compare Companies
               </Button>
             </div>
 
@@ -171,310 +293,492 @@ const Dashboard = () => {
                   value={url2}
                   onChange={(e) => setUrl2(e.target.value)}
                   className="flex-1"
+                  disabled={loading}
                 />
               </div>
             )}
           </CardContent>
         </Card>
 
+        {/* Filters */}
+        {savedCompanies.length > 0 && !analysis && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Filter className="w-5 h-5" />
+                Saved Analyses
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-4 mb-4">
+                <Select value={filterIndustry} onValueChange={(val) => {
+                  setFilterIndustry(val);
+                  setTimeout(() => loadSavedCompanies(), 100);
+                }}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Industry" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Industries</SelectItem>
+                    <SelectItem value="SaaS">SaaS</SelectItem>
+                    <SelectItem value="E-commerce">E-commerce</SelectItem>
+                    <SelectItem value="Fintech">Fintech</SelectItem>
+                    <SelectItem value="AI/ML">AI/ML</SelectItem>
+                    <SelectItem value="Marketing">Marketing</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {savedCompanies.map((company) => (
+                  <Card key={company.id} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => {
+                    setUrl(company.url);
+                    // Reconstruct analysis from saved data
+                    setAnalysis({
+                      company: {
+                        name: company.name,
+                        domain: company.domain,
+                        description: company.description,
+                        industry: company.industry,
+                        businessModel: company.business_model
+                      },
+                      traffic: company.traffic_estimate,
+                      revenue: company.revenue_estimate,
+                      seo: company.seo_metrics,
+                      social: company.social_presence,
+                      techStack: company.tech_stack.reduce((acc: any, tech: string) => {
+                        acc.all = acc.all || [];
+                        acc.all.push(tech);
+                        return acc;
+                      }, {}),
+                      aiInsights: company.ai_insights,
+                      lovablePrompt: company.lovable_prompt
+                    });
+                  }}>
+                    <CardHeader>
+                      <CardTitle className="text-lg">{company.name}</CardTitle>
+                      <CardDescription className="text-xs">{company.domain}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Traffic:</span>
+                          <span className="font-semibold">{formatNumber(company.traffic_estimate?.monthlyVisitors || 0)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">MRR:</span>
+                          <span className="font-semibold text-accent">{formatCurrency(company.revenue_estimate?.estimatedMRR || 0)}</span>
+                        </div>
+                        <Badge variant="outline">{company.industry}</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Results Section */}
         {analysis && (
           <div className="space-y-6">
-            {compareMode && analysis2 ? (
-              // Comparison View
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Company 1 */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">{analysis.companyName}</h3>
-                    <Card className="hover:shadow-[var(--shadow-glow)]">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Monthly Traffic</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-3xl font-bold text-primary">{analysis.traffic}</div>
-                      </CardContent>
-                    </Card>
-                    <Card className="hover:shadow-[var(--shadow-glow)]">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Estimated MRR</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-3xl font-bold text-accent">{analysis.mrr}</div>
-                        <div className="flex items-center gap-1 mt-1">
-                          <TrendingUp className="w-3 h-3 text-accent" />
-                          <p className="text-xs text-accent">{analysis.growthRate} growth</p>
-                        </div>
-                      </CardContent>
-                    </Card>
+            {/* Company Header */}
+            <Card className="shadow-card">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-3xl mb-2">{analysis.company.name}</CardTitle>
+                    <CardDescription className="text-base">{analysis.company.description}</CardDescription>
+                    <div className="flex gap-2 mt-3">
+                      <Badge variant="default">{analysis.company.industry}</Badge>
+                      <Badge variant="outline">{analysis.company.businessModel}</Badge>
+                      <Badge variant="outline">{analysis.company.foundedYear}</Badge>
+                    </div>
                   </div>
+                  <Button variant="outline" size="sm" onClick={() => setAnalysis(null)}>
+                    New Analysis
+                  </Button>
+                </div>
+              </CardHeader>
+            </Card>
 
-                  {/* Company 2 */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">{analysis2.companyName}</h3>
-                    <Card className="hover:shadow-[var(--shadow-glow)]">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Monthly Traffic</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-3xl font-bold text-primary">{analysis2.traffic}</div>
-                      </CardContent>
-                    </Card>
-                    <Card className="hover:shadow-[var(--shadow-glow)]">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Estimated MRR</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-3xl font-bold text-accent">{analysis2.mrr}</div>
-                        <div className="flex items-center gap-1 mt-1">
-                          <TrendingUp className="w-3 h-3 text-accent" />
-                          <p className="text-xs text-accent">{analysis2.growthRate} growth</p>
-                        </div>
-                      </CardContent>
-                    </Card>
+            {/* Key Metrics Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Card className="hover:shadow-[var(--shadow-glow)] transition-all">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    Monthly Traffic
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-primary">{formatNumber(analysis.traffic.monthlyVisitors)}</div>
+                  <div className="flex items-center gap-1 mt-1">
+                    <TrendingUp className="w-3 h-3 text-accent" />
+                    <p className="text-xs text-accent">{analysis.traffic.growthRate}% growth</p>
                   </div>
-                </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {analysis.traffic.organicTraffic}% organic • {analysis.traffic.paidTraffic}% paid
+                  </p>
+                </CardContent>
+              </Card>
 
-                {/* Comparison Charts */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Traffic Comparison</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" type="category" allowDuplicatedCategory={false} />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Line data={analysis.trafficData} type="monotone" dataKey="visitors" stroke="hsl(var(--primary))" name={analysis.companyName} />
-                        <Line data={analysis2.trafficData} type="monotone" dataKey="visitors" stroke="hsl(var(--accent))" name={analysis2.companyName} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
+              <Card className="hover:shadow-[var(--shadow-glow)] transition-all">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <DollarSign className="w-4 h-4" />
+                    Estimated MRR
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-accent">{formatCurrency(analysis.revenue.estimatedMRR)}</div>
+                  <div className="flex items-center gap-1 mt-1">
+                    <TrendingUp className="w-3 h-3 text-accent" />
+                    <p className="text-xs text-accent">{analysis.revenue.growthRate}% growth</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    ARR: {formatCurrency(analysis.revenue.estimatedARR)}
+                  </p>
+                </CardContent>
+              </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Revenue Comparison</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={analysis.revenueData.map((item: any, index: number) => ({
-                        ...item,
-                        revenue2: analysis2.revenueData[index].revenue
-                      }))}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="revenue" fill="hsl(var(--primary))" name={analysis.companyName} />
-                        <Bar dataKey="revenue2" fill="hsl(var(--accent))" name={analysis2.companyName} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
+              <Card className="hover:shadow-[var(--shadow-glow)] transition-all">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <Target className="w-4 h-4" />
+                    Domain Authority
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{analysis.seo.domainAuthority}/100</div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {analysis.seo.domainAge} years old
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatNumber(analysis.seo.backlinks)} backlinks
+                  </p>
+                </CardContent>
+              </Card>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>{analysis.companyName} - Tech Stack</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {analysis.techStack.map((tech: string) => (
-                          <Badge key={tech} variant="outline">{tech}</Badge>
+              <Card className="hover:shadow-[var(--shadow-glow)] transition-all">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <Award className="w-4 h-4" />
+                    Market Position
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{analysis.competition.marketPosition}</div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {analysis.competition.marketShare} market share
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    TAM: {analysis.competition.marketSize}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Charts Row 1 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5" />
+                    Traffic & Engagement Growth
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={generateTrafficData()}>
+                      <defs>
+                        <linearGradient id="colorVisitors" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                        </linearGradient>
+                        <linearGradient id="colorPageViews" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="hsl(var(--accent))" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="hsl(var(--accent))" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Area type="monotone" dataKey="visitors" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorVisitors)" name="Visitors (M)" />
+                      <Area type="monotone" dataKey="pageViews" stroke="hsl(var(--accent))" fillOpacity={1} fill="url(#colorPageViews)" name="Page Views (M)" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <DollarSign className="w-5 h-5" />
+                    Revenue Growth Trajectory
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={generateRevenueData()}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="mrr" fill="hsl(var(--accent))" name="MRR ($K)" />
+                      <Bar dataKey="arr" fill="hsl(var(--primary))" name="ARR ($K)" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Charts Row 2 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Technology Stack Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={generateTechStackData()}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={(entry) => `${entry.category}: ${entry.count}`}
+                        outerRadius={100}
+                        fill="#8884d8"
+                        dataKey="count"
+                      >
+                        {generateTechStackData().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>{analysis2.companyName} - Tech Stack</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {analysis2.techStack.map((tech: string) => (
-                          <Badge key={tech} variant="outline">{tech}</Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </>
-            ) : (
-              // Single Company View
-              <>
-                {/* Key Metrics */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card className="hover:shadow-[var(--shadow-glow)]">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">
-                        Monthly Traffic
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-3xl font-bold text-primary">{analysis.traffic}</div>
-                      <p className="text-xs text-muted-foreground mt-1">visitors/month</p>
-                    </CardContent>
-                  </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Competitive Analysis Radar</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <RadarChart data={generateCompetitionRadar()}>
+                      <PolarGrid />
+                      <PolarAngleAxis dataKey="subject" />
+                      <PolarRadiusAxis angle={90} domain={[0, 100]} />
+                      <Radar name="Score" dataKey="value" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.6} />
+                      <Tooltip />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
 
-                  <Card className="hover:shadow-[var(--shadow-glow)]">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">
-                        Estimated MRR
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-3xl font-bold text-accent">{analysis.mrr}</div>
-                      <div className="flex items-center gap-1 mt-1">
-                        <TrendingUp className="w-3 h-3 text-accent" />
-                        <p className="text-xs text-accent">{analysis.growthRate} growth</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="hover:shadow-[var(--shadow-glow)]">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">
-                        Domain Authority
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-3xl font-bold">{analysis.domain.authority}</div>
-                      <p className="text-xs text-muted-foreground mt-1">{analysis.domain.age} old</p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Charts */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Traffic Growth</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ResponsiveContainer width="100%" height={250}>
-                        <LineChart data={analysis.trafficData}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="month" />
-                          <YAxis />
-                          <Tooltip />
-                          <Line type="monotone" dataKey="visitors" stroke="hsl(var(--primary))" strokeWidth={2} />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Revenue Growth (K)</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ResponsiveContainer width="100%" height={250}>
-                        <BarChart data={analysis.revenueData}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="month" />
-                          <YAxis />
-                          <Tooltip />
-                          <Bar dataKey="revenue" fill="hsl(var(--accent))" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Technology Distribution</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <PieChart>
-                        <Pie
-                          data={analysis.techDistribution}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          label={(entry) => entry.name}
-                          outerRadius={80}
-                          fill="#8884d8"
-                          dataKey="value"
-                        >
-                          {analysis.techDistribution.map((entry: any, index: number) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            {/* Detailed Info Sections */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Tech Stack */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5" />
+                    Complete Tech Stack
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {Object.entries(analysis.techStack).map(([category, tools]: [string, any]) => (
+                      <div key={category}>
+                        <h4 className="font-semibold text-sm mb-2 capitalize">{category}</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {Array.isArray(tools) && tools.map((tech: string) => (
+                            <Badge key={tech} variant="outline">{tech}</Badge>
                           ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-
-                {/* Business Insights */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <BarChart3 className="w-5 h-5" />
-                      Business Intelligence
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <h4 className="text-sm font-medium mb-2">Business Model</h4>
-                      <Badge variant="secondary">{analysis.businessModel}</Badge>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium mb-2">Tech Stack</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {analysis.techStack.map((tech: string) => (
-                          <Badge key={tech} variant="outline">{tech}</Badge>
-                        ))}
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
 
-                {/* Lovable Prompt */}
-                <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-primary" />
-                      Your Lovable Prompt
-                    </CardTitle>
-                    <CardDescription>
-                      A personalized startup idea inspired by this company
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-foreground leading-relaxed mb-4">{analysis.prompt}</p>
-                    <div className="flex gap-2">
-                      <Button variant="gradient" onClick={copyPrompt}>
-                        <Copy className="w-4 h-4" />
-                        Copy Prompt
-                      </Button>
-                      <Button variant="outline" onClick={() => window.open('https://lovable.dev', '_blank')}>
-                        Build this with Lovable
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-          </div>
-        )}
+              {/* Social Presence */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Social Media Presence</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {Object.entries(analysis.social).map(([platform, data]: [string, any]) => (
+                      <div key={platform} className="flex items-center justify-between p-2 rounded bg-muted/50">
+                        <div>
+                          <span className="font-semibold capitalize">{platform}</span>
+                          <p className="text-xs text-muted-foreground">
+                            {data.followers ? formatNumber(data.followers) : formatNumber(data.subscribers || 0)} {data.followers ? 'followers' : 'subscribers'}
+                          </p>
+                        </div>
+                        <Badge variant={
+                          data.engagement === 'high' ? 'default' : 
+                          data.engagement === 'medium' ? 'outline' : 'secondary'
+                        }>
+                          {data.engagement}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
-        {/* Empty State */}
-        {!analysis && !loading && (
-          <div className="text-center py-16">
-            <Globe className="w-16 h-16 mx-auto text-muted-foreground/50 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Ready to discover opportunities?</h3>
-            <p className="text-muted-foreground">
-              Enter a company URL above to get started with AI-powered analysis
-            </p>
+            {/* AI Insights */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5" />
+                  AI-Powered SWOT Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      Strengths
+                    </h4>
+                    <ul className="space-y-2">
+                      {analysis.aiInsights.strengths.map((item: string, i: number) => (
+                        <li key={i} className="text-sm flex items-start gap-2">
+                          <span className="text-green-500 mt-0.5">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                      <XCircle className="w-4 h-4 text-red-500" />
+                      Weaknesses
+                    </h4>
+                    <ul className="space-y-2">
+                      {analysis.aiInsights.weaknesses.map((item: string, i: number) => (
+                        <li key={i} className="text-sm flex items-start gap-2">
+                          <span className="text-red-500 mt-0.5">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                      <Lightbulb className="w-4 h-4 text-blue-500" />
+                      Opportunities
+                    </h4>
+                    <ul className="space-y-2">
+                      {analysis.aiInsights.opportunities.map((item: string, i: number) => (
+                        <li key={i} className="text-sm flex items-start gap-2">
+                          <span className="text-blue-500 mt-0.5">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-orange-500" />
+                      Threats
+                    </h4>
+                    <ul className="space-y-2">
+                      {analysis.aiInsights.threats.map((item: string, i: number) => (
+                        <li key={i} className="text-sm flex items-start gap-2">
+                          <span className="text-orange-500 mt-0.5">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+                  <h4 className="font-semibold text-sm mb-3">Recommended Actions</h4>
+                  <ul className="space-y-2">
+                    {analysis.aiInsights.recommendedActions.map((action: string, i: number) => (
+                      <li key={i} className="text-sm flex items-start gap-2">
+                        <span className="text-primary mt-0.5">→</span>
+                        <span>{action}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Competition */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Competitive Landscape</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-sm mb-2">Competitive Advantage</h4>
+                    <p className="text-sm text-muted-foreground">{analysis.competition.competitiveAdvantage}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-2">Main Competitors</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {analysis.competition.mainCompetitors.map((competitor: string) => (
+                        <Badge key={competitor} variant="outline">{competitor}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Lovable Prompt */}
+            <Card className="border-2 border-primary/20 shadow-[var(--shadow-glow)]">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  Build Your Version with Lovable
+                </CardTitle>
+                <CardDescription>
+                  AI-generated prompt to create a similar or improved business
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="p-4 bg-muted/50 rounded-lg mb-4">
+                  <p className="text-sm whitespace-pre-wrap">{analysis.lovablePrompt}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={copyPrompt} variant="outline" className="flex-1">
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy Prompt
+                  </Button>
+                  <Button 
+                    variant="gradient"
+                    className="flex-1"
+                    onClick={() => {
+                      copyPrompt();
+                      window.open('https://lovable.dev', '_blank');
+                    }}
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Build with Lovable
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
       </main>
