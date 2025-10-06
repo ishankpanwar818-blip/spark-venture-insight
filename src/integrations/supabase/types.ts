@@ -14,7 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      companies: {
+        Row: {
+          ai_insights: Json | null
+          analysis_date: string
+          business_model: string | null
+          created_at: string
+          description: string | null
+          domain: string
+          growth_metrics: Json | null
+          id: string
+          industry: string | null
+          lovable_prompt: string | null
+          name: string | null
+          revenue_estimate: Json | null
+          seo_metrics: Json | null
+          social_presence: Json | null
+          tech_stack: string[] | null
+          traffic_estimate: Json | null
+          updated_at: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          ai_insights?: Json | null
+          analysis_date?: string
+          business_model?: string | null
+          created_at?: string
+          description?: string | null
+          domain: string
+          growth_metrics?: Json | null
+          id?: string
+          industry?: string | null
+          lovable_prompt?: string | null
+          name?: string | null
+          revenue_estimate?: Json | null
+          seo_metrics?: Json | null
+          social_presence?: Json | null
+          tech_stack?: string[] | null
+          traffic_estimate?: Json | null
+          updated_at?: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          ai_insights?: Json | null
+          analysis_date?: string
+          business_model?: string | null
+          created_at?: string
+          description?: string | null
+          domain?: string
+          growth_metrics?: Json | null
+          id?: string
+          industry?: string | null
+          lovable_prompt?: string | null
+          name?: string | null
+          revenue_estimate?: Json | null
+          seo_metrics?: Json | null
+          social_presence?: Json | null
+          tech_stack?: string[] | null
+          traffic_estimate?: Json | null
+          updated_at?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
