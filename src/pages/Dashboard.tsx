@@ -18,18 +18,20 @@ import {
 } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [url, setUrl] = useState('');
-  const [url2, setUrl2] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [compareMode, setCompareMode] = useState(false);
-  const [analysis, setAnalysis] = useState<any>(null);
-  const [savedCompanies, setSavedCompanies] = useState<any[]>([]);
-  const [filterIndustry, setFilterIndustry] = useState('all');
-  const [filterRevenue, setFilterRevenue] = useState('all');
-  const { toast } = useToast();
+const [url, setUrl] = useState('');
+const [url2, setUrl2] = useState('');
+const [loading, setLoading] = useState(false);
+const [compareMode, setCompareMode] = useState(false);
+const [forceRefresh, setForceRefresh] = useState(false);
+const [analysis, setAnalysis] = useState<any>(null);
+const [savedCompanies, setSavedCompanies] = useState<any[]>([]);
+const [filterIndustry, setFilterIndustry] = useState('all');
+const [filterRevenue, setFilterRevenue] = useState('all');
+const { toast } = useToast();
 
   const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', '#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444'];
 
@@ -62,6 +64,14 @@ const Dashboard = () => {
     }
   };
 
+  const extractDomain = (input: string) => {
+    try {
+      return new URL(input).hostname.replace('www.', '');
+    } catch {
+      return input.replace(/^https?:\/\/(www\.)?/, '').split('/')[0];
+    }
+  };
+
   const handleAnalyze = async () => {
     if (!url) {
       toast({
@@ -70,6 +80,39 @@ const Dashboard = () => {
         variant: "destructive",
       });
       return;
+    }
+
+    // Use saved analysis if available and not forcing refresh
+    const domainToCheck = extractDomain(url);
+    if (!forceRefresh && !compareMode) {
+      const existing = savedCompanies.find((c) => c.domain === domainToCheck);
+      if (existing) {
+        setAnalysis({
+          company: {
+            name: existing.name,
+            domain: existing.domain,
+            description: existing.description,
+            industry: existing.industry,
+            businessModel: existing.business_model
+          },
+          traffic: existing.traffic_estimate,
+          revenue: existing.revenue_estimate,
+          seo: existing.seo_metrics,
+          social: existing.social_presence,
+          techStack: (existing.tech_stack || []).reduce((acc: any, tech: string) => {
+            acc.all = acc.all || [];
+            acc.all.push(tech);
+            return acc;
+          }, {}),
+          aiInsights: existing.ai_insights,
+          lovablePrompt: existing.lovable_prompt
+        });
+        toast({
+          title: "Loaded saved analysis",
+          description: "Showing your last results for consistency. Toggle Refresh to re-run.",
+        });
+        return;
+      }
     }
 
     setLoading(true);
@@ -272,7 +315,7 @@ const Dashboard = () => {
               </Button>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4 flex-wrap">
               <Button
                 variant={compareMode ? "default" : "outline"}
                 size="sm"
@@ -284,6 +327,10 @@ const Dashboard = () => {
                 <GitCompare className="w-4 h-4 mr-2" />
                 Compare Companies
               </Button>
+              <div className="flex items-center gap-2">
+                <Switch id="refresh-toggle" checked={forceRefresh} onCheckedChange={setForceRefresh} />
+                <label htmlFor="refresh-toggle" className="text-sm text-muted-foreground">Refresh data</label>
+              </div>
             </div>
 
             {compareMode && (
