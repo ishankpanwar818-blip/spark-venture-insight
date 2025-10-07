@@ -13,10 +13,10 @@ serve(async (req) => {
 
   try {
     const { url, compareUrl } = await req.json();
-    const GROQ_API_KEY = Deno.env.get('GROQ_API_KEY');
+    const GROQ_API_KEY = Deno.env.get('Grokapikey');
 
     if (!GROQ_API_KEY) {
-      throw new Error('GROQ_API_KEY is not configured');
+      throw new Error('Groq API key is not configured');
     }
 
     console.log('Analyzing company:', url);
