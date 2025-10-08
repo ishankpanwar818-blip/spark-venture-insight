@@ -1,67 +1,121 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, TrendingUp, Search, Zap, Globe } from 'lucide-react';
-import heroImage from '@/assets/hero-bg.jpg';
+import { Sparkles, TrendingUp, Search, Zap, Globe, MousePointer2 } from 'lucide-react';
 import echodftLogo from '@/assets/echodft-logo.png';
+import { useState, useEffect } from 'react';
 
 const Index = () => {
   const navigate = useNavigate();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100,
+      });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div 
-          className="absolute inset-0 z-0 opacity-30"
-          style={{
-            backgroundImage: `url(${heroImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-background/90 z-0" />
+    <div className="min-h-screen bg-background overflow-hidden">
+      {/* Hero Section with 3D Bat Background */}
+      <section className="relative min-h-screen overflow-hidden">
+        {/* Animated Mesh Gradient Background */}
+        <div className="absolute inset-0 mesh-gradient opacity-40" />
         
-        <div className="relative z-10 container mx-auto px-4 py-24 md:py-32">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="mb-8">
-              <img 
-                src={echodftLogo} 
-                alt="EchoDFT Logo" 
-                className="w-48 h-48 mx-auto mb-6 drop-shadow-2xl hover:scale-105 transition-transform duration-300"
-              />
+        {/* Giant 3D Bat Logo Background */}
+        <div 
+          className="absolute inset-0 flex items-center justify-center opacity-20 transform-3d floating"
+          style={{
+            transform: `rotateY(${mousePosition.x / 20}deg) rotateX(${-mousePosition.y / 20}deg) scale(3)`,
+            transition: 'transform 0.3s ease-out',
+          }}
+        >
+          <img 
+            src={echodftLogo} 
+            alt="" 
+            className="w-full max-w-4xl drop-shadow-[0_0_120px_rgba(66,153,225,0.6)]"
+            style={{
+              filter: 'brightness(0.4) contrast(2)',
+            }}
+          />
+        </div>
+
+        {/* Holographic Overlay */}
+        <div className="absolute inset-0 holographic opacity-10 mix-blend-overlay" />
+        
+        {/* Glass Navigation */}
+        <nav className="relative z-50 glass-strong border-b border-border/50">
+          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+            <img 
+              src={echodftLogo} 
+              alt="EchoDFT" 
+              className="w-12 h-12 drop-shadow-[0_0_20px_rgba(66,153,225,0.8)]"
+            />
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/auth')}
+              className="glass-card hover:bg-primary/20 border-0"
+            >
+              Sign in
+            </Button>
+          </div>
+        </nav>
+        
+        <div className="relative z-10 container mx-auto px-4 py-32 md:py-40">
+          <div className="max-w-5xl mx-auto text-center">
+            {/* Floating Logo */}
+            <div className="mb-12 floating">
+              <div className="relative inline-block">
+                <div className="absolute inset-0 blur-3xl bg-primary/30 rounded-full" />
+                <img 
+                  src={echodftLogo} 
+                  alt="EchoDFT Logo" 
+                  className="relative w-32 h-32 md:w-48 md:h-48 mx-auto drop-shadow-[0_0_60px_rgba(66,153,225,0.9)] transform hover:scale-110 transition-all duration-500"
+                  style={{
+                    filter: 'drop-shadow(0 0 30px rgba(139, 92, 246, 0.7))',
+                  }}
+                />
+              </div>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-primary via-[hsl(232,83%,68%)] to-accent bg-clip-text text-transparent">
+            {/* Holographic Title */}
+            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight transform-3d">
+              <span className="inline-block holographic bg-clip-text text-transparent drop-shadow-2xl">
                 Echo the Insight.
               </span>
               <br />
-              <span className="bg-gradient-to-r from-accent via-[hsl(280,83%,68%)] to-primary bg-clip-text text-transparent">
+              <span className="inline-block holographic bg-clip-text text-transparent drop-shadow-2xl" style={{ animationDelay: '4s' }}>
                 Draft the Future.
               </span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-xl md:text-3xl text-foreground/90 mb-12 max-w-3xl mx-auto font-light backdrop-blur-sm">
               AI-powered company analysis that reveals the blueprint behind successful businesses
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* Glass CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Button 
                 size="lg" 
-                variant="gradient"
                 onClick={() => navigate('/dashboard')}
-                className="text-lg px-8 py-6"
+                className="glass-strong text-lg px-12 py-8 text-foreground hover:shadow-[var(--shadow-3d)] hover:scale-105 transition-all duration-300 border-2 border-primary/50 relative overflow-hidden group"
               >
-                <Search className="w-5 h-5" />
-                Start Analyzing
+                <div className="absolute inset-0 holographic opacity-0 group-hover:opacity-30 transition-opacity" />
+                <Search className="w-6 h-6 mr-2 relative z-10" />
+                <span className="relative z-10 font-semibold">Start Analyzing</span>
               </Button>
               <Button 
                 size="lg" 
                 variant="outline"
                 onClick={() => navigate('/auth')}
-                className="text-lg px-8 py-6"
+                className="glass-card text-lg px-12 py-8 border-2 border-border/50 hover:border-primary/50 hover:shadow-[var(--shadow-glow)] hover:scale-105 transition-all duration-300"
               >
+                <MousePointer2 className="w-6 h-6 mr-2" />
                 Sign in
               </Button>
             </div>
@@ -69,43 +123,55 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+      {/* Features Section with Glass Cards */}
+      <section className="relative container mx-auto px-4 py-32">
+        {/* Background Accent */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] opacity-30" />
+        
+        <div className="relative z-10 text-center mb-16">
+          <h2 className="text-4xl md:text-6xl font-bold mb-6 holographic bg-clip-text text-transparent">
             Everything You Need to Validate Ideas
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl text-foreground/80 max-w-3xl mx-auto font-light">
             Get comprehensive insights into any company with just their URL
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          <Card className="hover:shadow-[var(--shadow-glow)] transition-all">
-            <CardHeader>
-              <Globe className="w-10 h-10 text-primary mb-4" />
-              <CardTitle>Deep Web Analysis</CardTitle>
-              <CardDescription>
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <Card className="glass-strong hover:shadow-[var(--shadow-3d)] hover:scale-105 transition-all duration-500 border-2 border-border/30 hover:border-primary/50 group">
+            <CardHeader className="space-y-6">
+              <div className="relative w-16 h-16 mx-auto">
+                <div className="absolute inset-0 bg-primary/20 rounded-xl blur-xl group-hover:blur-2xl transition-all" />
+                <Globe className="relative w-16 h-16 text-primary drop-shadow-[0_0_20px_rgba(66,153,225,0.8)]" />
+              </div>
+              <CardTitle className="text-2xl">Deep Web Analysis</CardTitle>
+              <CardDescription className="text-base text-foreground/70">
                 Automatically scrape traffic data, SEO metrics, tech stack, and social presence
               </CardDescription>
             </CardHeader>
           </Card>
 
-          <Card className="hover:shadow-[var(--shadow-glow)] transition-all">
-            <CardHeader>
-              <TrendingUp className="w-10 h-10 text-accent mb-4" />
-              <CardTitle>AI-Powered Insights</CardTitle>
-              <CardDescription>
+          <Card className="glass-strong hover:shadow-[var(--shadow-3d)] hover:scale-105 transition-all duration-500 border-2 border-border/30 hover:border-primary/50 group">
+            <CardHeader className="space-y-6">
+              <div className="relative w-16 h-16 mx-auto">
+                <div className="absolute inset-0 bg-accent/20 rounded-xl blur-xl group-hover:blur-2xl transition-all" />
+                <TrendingUp className="relative w-16 h-16 text-accent drop-shadow-[0_0_20px_rgba(139,92,246,0.8)]" />
+              </div>
+              <CardTitle className="text-2xl">AI-Powered Insights</CardTitle>
+              <CardDescription className="text-base text-foreground/70">
                 Get intelligent estimates on business model, MRR, growth potential, and market positioning
               </CardDescription>
             </CardHeader>
           </Card>
 
-          <Card className="hover:shadow-[var(--shadow-glow)] transition-all">
-            <CardHeader>
-              <Zap className="w-10 h-10 text-primary mb-4" />
-              <CardTitle>Lovable Prompts</CardTitle>
-              <CardDescription>
+          <Card className="glass-strong hover:shadow-[var(--shadow-3d)] hover:scale-105 transition-all duration-500 border-2 border-border/30 hover:border-primary/50 group">
+            <CardHeader className="space-y-6">
+              <div className="relative w-16 h-16 mx-auto">
+                <div className="absolute inset-0 bg-primary/20 rounded-xl blur-xl group-hover:blur-2xl transition-all" />
+                <Zap className="relative w-16 h-16 text-primary drop-shadow-[0_0_20px_rgba(66,153,225,0.8)]" />
+              </div>
+              <CardTitle className="text-2xl">Lovable Prompts</CardTitle>
+              <CardDescription className="text-base text-foreground/70">
                 Receive personalized startup ideas based on successful companies in your niche
               </CardDescription>
             </CardHeader>
@@ -113,25 +179,44 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="container mx-auto px-4 py-20">
-        <Card className="max-w-4xl mx-auto bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
-          <CardContent className="pt-12 pb-12 text-center">
-            <Sparkles className="w-12 h-12 text-primary mx-auto mb-4" />
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+      {/* CTA Section with Holographic Effect */}
+      <section className="relative container mx-auto px-4 py-32 mb-20">
+        {/* Floating Bat Background */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 floating">
+          <img 
+            src={echodftLogo} 
+            alt="" 
+            className="w-[800px] blur-sm"
+            style={{ filter: 'brightness(0.5)' }}
+          />
+        </div>
+
+        <Card className="relative max-w-5xl mx-auto glass-strong border-2 border-primary/30 overflow-hidden group">
+          <div className="absolute inset-0 holographic opacity-20 group-hover:opacity-30 transition-opacity" />
+          
+          <CardContent className="relative z-10 pt-20 pb-20 text-center">
+            <div className="relative inline-block mb-8">
+              <div className="absolute inset-0 bg-primary/30 rounded-full blur-2xl" />
+              <Sparkles className="relative w-20 h-20 text-primary mx-auto drop-shadow-[0_0_30px_rgba(66,153,225,0.9)] animate-pulse" />
+            </div>
+            
+            <h2 className="text-4xl md:text-6xl font-bold mb-6 holographic bg-clip-text text-transparent">
               Ready to Find Your Next Big Idea?
             </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            
+            <p className="text-xl md:text-2xl text-foreground/80 mb-12 max-w-3xl mx-auto font-light">
               Join entrepreneurs using EchoDFT to echo insights and draft the future 
               of scalable business opportunities
             </p>
+            
             <Button 
               size="lg" 
-              variant="gradient"
               onClick={() => navigate('/auth')}
-              className="text-lg px-8 py-6"
+              className="glass-strong text-xl px-16 py-10 hover:shadow-[var(--shadow-3d)] hover:scale-110 transition-all duration-500 border-2 border-primary/50 relative overflow-hidden group/btn"
             >
-              Get Started Free
+              <div className="absolute inset-0 holographic opacity-0 group-hover/btn:opacity-40 transition-opacity" />
+              <Sparkles className="w-6 h-6 mr-3 relative z-10" />
+              <span className="relative z-10 font-bold">Get Started Free</span>
             </Button>
           </CardContent>
         </Card>

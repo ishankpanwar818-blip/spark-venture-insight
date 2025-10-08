@@ -41,12 +41,22 @@ All colors MUST be HSL.
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(200 80% 55%));
     --gradient-subtle: linear-gradient(180deg, hsl(222 47% 11%), hsl(220 40% 15%));
     --gradient-glass: linear-gradient(135deg, hsla(217 91% 60% / 0.1), hsla(200 80% 55% / 0.05));
+    --gradient-holographic: linear-gradient(135deg, hsl(217 91% 60%), hsl(280 83% 68%), hsl(200 80% 55%), hsl(217 91% 60%));
+    --gradient-mesh: radial-gradient(at 0% 0%, hsla(217, 91%, 60%, 0.3) 0px, transparent 50%),
+                     radial-gradient(at 100% 0%, hsla(280, 83%, 68%, 0.2) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, hsla(200, 80%, 55%, 0.3) 0px, transparent 50%),
+                     radial-gradient(at 0% 100%, hsla(217, 91%, 60%, 0.2) 0px, transparent 50%);
     --shadow-card: 0 4px 20px -2px rgb(0 0 0 / 0.5), 0 2px 10px -2px rgb(0 0 0 / 0.3);
     --shadow-elegant: 0 10px 40px -10px hsl(217 91% 60% / 0.4);
     --shadow-glow: 0 0 30px hsl(217 91% 60% / 0.3);
+    --shadow-3d: 0 20px 60px -10px hsl(217 91% 60% / 0.5), 0 10px 30px -5px hsl(280 83% 68% / 0.3);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --glass-bg: hsla(220 40% 15% / 0.7);
-    --glass-border: hsla(217 91% 60% / 0.2);
+    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --glass-bg: hsla(220 40% 15% / 0.4);
+    --glass-border: hsla(217 91% 60% / 0.3);
+    --glass-strong: hsla(220 40% 15% / 0.7);
+    --blur-subtle: blur(20px);
+    --blur-strong: blur(40px);
   }
 
   .dark {
@@ -94,14 +104,58 @@ All colors MUST be HSL.
   
   .glass-card {
     background: var(--glass-bg);
-    backdrop-filter: blur(10px);
+    backdrop-filter: var(--blur-subtle);
+    -webkit-backdrop-filter: var(--blur-subtle);
     border: 1px solid var(--glass-border);
     box-shadow: var(--shadow-card);
+  }
+  
+  .glass-strong {
+    background: var(--glass-strong);
+    backdrop-filter: var(--blur-strong);
+    -webkit-backdrop-filter: var(--blur-strong);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-3d);
   }
   
   .glass-input {
     background: hsla(220 40% 15% / 0.5);
     backdrop-filter: blur(8px);
     border: 1px solid var(--glass-border);
+  }
+  
+  .holographic {
+    background: var(--gradient-holographic);
+    background-size: 200% 200%;
+    animation: holographic-shift 8s ease infinite;
+  }
+  
+  .mesh-gradient {
+    background: var(--gradient-mesh);
+    animation: mesh-flow 15s ease infinite;
+  }
+  
+  @keyframes holographic-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  @keyframes mesh-flow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
+  
+  .transform-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+  
+  .floating {
+    animation: floating 6s ease-in-out infinite;
+  }
+  
+  @keyframes floating {
+    0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+    50% { transform: translateY(-20px) rotateZ(2deg); }
   }
 }
