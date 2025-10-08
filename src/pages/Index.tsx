@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, TrendingUp, Search, Zap, Globe } from 'lucide-react';
 import heroImage from '@/assets/hero-bg.jpg';
+import echodftLogo from '@/assets/echodft-logo.png';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -23,21 +24,26 @@ const Index = () => {
         
         <div className="relative z-10 container mx-auto px-4 py-24 md:py-32">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 mb-6 bg-primary/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">AI-Powered Business Intelligence</span>
+            <div className="mb-8">
+              <img 
+                src={echodftLogo} 
+                alt="EchoDFT Logo" 
+                className="w-48 h-48 mx-auto mb-6 drop-shadow-2xl hover:scale-105 transition-transform duration-300"
+              />
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Discover Scalable{' '}
               <span className="bg-gradient-to-r from-primary via-[hsl(232,83%,68%)] to-accent bg-clip-text text-transparent">
-                Business Ideas
+                Echo the Insight.
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-accent via-[hsl(280,83%,68%)] to-primary bg-clip-text text-transparent">
+                Draft the Future.
               </span>
             </h1>
             
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Analyze any company's website and get AI-powered insights on their business model, 
-              tech stack, revenue, and growth potential
+              AI-powered company analysis that reveals the blueprint behind successful businesses
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -116,8 +122,8 @@ const Index = () => {
               Ready to Find Your Next Big Idea?
             </h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join entrepreneurs using CompanyScope to discover and validate 
-              scalable business opportunities
+              Join entrepreneurs using EchoDFT to echo insights and draft the future 
+              of scalable business opportunities
             </p>
             <Button 
               size="lg" 

@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Sparkles } from 'lucide-react';
+import echodftLogo from '@/assets/echodft-logo.png';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -33,14 +34,18 @@ const Auth = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-[hsl(var(--gradient-hero))] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <Sparkles className="w-8 h-8 text-primary" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-[hsl(232,83%,68%)] bg-clip-text text-transparent">
-              CompanyScope
+          <div className="mb-4">
+            <img 
+              src={echodftLogo} 
+              alt="EchoDFT Logo" 
+              className="w-32 h-32 mx-auto mb-4 drop-shadow-2xl"
+            />
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-[hsl(232,83%,68%)] bg-clip-text text-transparent mb-2">
+              EchoDFT
             </h1>
           </div>
-          <p className="text-muted-foreground">
-            Discover scalable business ideas by analyzing real companies
+          <p className="text-muted-foreground text-lg font-medium">
+            Echo the Insight. Draft the Future.
           </p>
         </div>
 

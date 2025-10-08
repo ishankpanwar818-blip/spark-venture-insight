@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import echodftLogo from '@/assets/echodft-logo.png';
 import { 
   BarChart3, TrendingUp, Globe, Sparkles, Search, Loader2, ArrowLeft, 
   Copy, GitCompare, Filter, DollarSign, Users, Target, Award, 
@@ -262,11 +263,18 @@ const { toast } = useToast();
             <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-primary" />
-              <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-[hsl(232,83%,68%)] bg-clip-text text-transparent">
-                CompanyScope AI
-              </h1>
+            <div className="flex items-center gap-3">
+              <img 
+                src={echodftLogo} 
+                alt="EchoDFT" 
+                className="w-10 h-10 drop-shadow-lg"
+              />
+              <div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-[hsl(232,83%,68%)] bg-clip-text text-transparent">
+                  EchoDFT
+                </h1>
+                <p className="text-xs text-muted-foreground">Echo the Insight. Draft the Future.</p>
+              </div>
             </div>
           </div>
           <Button variant="ghost" onClick={() => navigate('/auth')}>Sign out</Button>
