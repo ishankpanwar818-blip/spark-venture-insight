@@ -27,20 +27,20 @@ const Index = () => {
         {/* Animated Mesh Gradient Background */}
         <div className="absolute inset-0 mesh-gradient opacity-40" />
         
-        {/* Giant 3D Bat Logo Background */}
+        {/* Giant 3D Bat Logo Background - Much Larger */}
         <div 
-          className="absolute inset-0 flex items-center justify-center opacity-20 transform-3d floating"
+          className="absolute inset-0 flex items-center justify-center opacity-15 transform-3d floating"
           style={{
-            transform: `rotateY(${mousePosition.x / 20}deg) rotateX(${-mousePosition.y / 20}deg) scale(3)`,
+            transform: `rotateY(${mousePosition.x / 20}deg) rotateX(${-mousePosition.y / 20}deg) scale(5)`,
             transition: 'transform 0.3s ease-out',
           }}
         >
           <img 
             src={echodftLogo} 
             alt="" 
-            className="w-full max-w-4xl drop-shadow-[0_0_120px_rgba(66,153,225,0.6)]"
+            className="w-full max-w-[1400px] drop-shadow-[0_0_200px_rgba(66,153,225,0.7)]"
             style={{
-              filter: 'brightness(0.4) contrast(2)',
+              filter: 'brightness(0.3) contrast(2.5)',
             }}
           />
         </div>
@@ -68,18 +68,56 @@ const Index = () => {
         
         <div className="relative z-10 container mx-auto px-4 py-32 md:py-40">
           <div className="max-w-5xl mx-auto text-center">
-            {/* Floating Logo */}
-            <div className="mb-12 floating">
+            {/* Floating Graphical Ring with Bat */}
+            <div className="mb-12 floating relative">
               <div className="relative inline-block">
-                <div className="absolute inset-0 blur-3xl bg-primary/30 rounded-full" />
-                <img 
-                  src={echodftLogo} 
-                  alt="EchoDFT Logo" 
-                  className="relative w-32 h-32 md:w-48 md:h-48 mx-auto drop-shadow-[0_0_60px_rgba(66,153,225,0.9)] transform hover:scale-110 transition-all duration-500"
-                  style={{
-                    filter: 'drop-shadow(0 0 30px rgba(139, 92, 246, 0.7))',
-                  }}
-                />
+                {/* Outer Glow Ring */}
+                <div className="absolute inset-0 blur-3xl bg-primary/40 rounded-full animate-pulse" />
+                
+                {/* Multiple Rotating Rings */}
+                <div className="relative w-32 h-32 md:w-56 md:h-56 mx-auto">
+                  {/* Main Holographic Ring */}
+                  <div 
+                    className="absolute inset-0 rounded-full border-[6px] border-transparent holographic opacity-80"
+                    style={{
+                      animation: 'spin 20s linear infinite, holographic-shift 8s ease infinite',
+                      boxShadow: '0 0 60px hsl(217 91% 60%), inset 0 0 40px hsl(217 91% 60% / 0.3)',
+                    }}
+                  />
+                  
+                  {/* Secondary Ring */}
+                  <div 
+                    className="absolute inset-2 rounded-full border-[4px] border-primary/60"
+                    style={{
+                      animation: 'spin 15s linear infinite reverse',
+                      boxShadow: '0 0 40px hsl(280 83% 68%), inset 0 0 30px hsl(280 83% 68% / 0.2)',
+                    }}
+                  />
+                  
+                  {/* Inner Glow Ring */}
+                  <div 
+                    className="absolute inset-4 rounded-full border-[3px] border-accent/80"
+                    style={{
+                      animation: 'spin 10s linear infinite',
+                      boxShadow: '0 0 30px hsl(200 80% 55%), inset 0 0 20px hsl(200 80% 55% / 0.4)',
+                    }}
+                  />
+                  
+                  {/* Center Bat Logo */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <img 
+                      src={echodftLogo} 
+                      alt="EchoDFT Bat" 
+                      className="w-16 h-16 md:w-24 md:h-24 drop-shadow-[0_0_40px_rgba(66,153,225,1)]"
+                      style={{
+                        filter: 'brightness(1.2) contrast(1.5) drop-shadow(0 0 20px rgba(139, 92, 246, 0.9))',
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Particle Effects */}
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 blur-xl animate-pulse" />
+                </div>
               </div>
             </div>
             
