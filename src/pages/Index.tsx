@@ -68,55 +68,85 @@ const Index = () => {
         
         <div className="relative z-10 container mx-auto px-4 py-32 md:py-40">
           <div className="max-w-5xl mx-auto text-center">
-            {/* Floating Graphical Ring with Bat */}
+            {/* Pure Golden Ring - Meta Style */}
             <div className="mb-12 floating relative">
               <div className="relative inline-block">
-                {/* Outer Glow Ring */}
-                <div className="absolute inset-0 blur-3xl bg-primary/40 rounded-full animate-pulse" />
+                {/* Outer Glow */}
+                <div className="absolute inset-0 blur-[100px] bg-gradient-to-r from-yellow-500/60 via-amber-400/60 to-orange-500/60 rounded-full animate-pulse" />
                 
-                {/* Multiple Rotating Rings */}
-                <div className="relative w-32 h-32 md:w-56 md:h-56 mx-auto">
-                  {/* Main Holographic Ring */}
-                  <div 
-                    className="absolute inset-0 rounded-full border-[6px] border-transparent holographic opacity-80"
-                    style={{
-                      animation: 'spin 20s linear infinite, holographic-shift 8s ease infinite',
-                      boxShadow: '0 0 60px hsl(217 91% 60%), inset 0 0 40px hsl(217 91% 60% / 0.3)',
-                    }}
-                  />
-                  
-                  {/* Secondary Ring */}
-                  <div 
-                    className="absolute inset-2 rounded-full border-[4px] border-primary/60"
-                    style={{
-                      animation: 'spin 15s linear infinite reverse',
-                      boxShadow: '0 0 40px hsl(280 83% 68%), inset 0 0 30px hsl(280 83% 68% / 0.2)',
-                    }}
-                  />
-                  
-                  {/* Inner Glow Ring */}
-                  <div 
-                    className="absolute inset-4 rounded-full border-[3px] border-accent/80"
-                    style={{
-                      animation: 'spin 10s linear infinite',
-                      boxShadow: '0 0 30px hsl(200 80% 55%), inset 0 0 20px hsl(200 80% 55% / 0.4)',
-                    }}
-                  />
-                  
-                  {/* Center Bat Logo */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <img 
-                      src={echodftLogo} 
-                      alt="EchoDFT Bat" 
-                      className="w-16 h-16 md:w-24 md:h-24 drop-shadow-[0_0_40px_rgba(66,153,225,1)]"
-                      style={{
-                        filter: 'brightness(1.2) contrast(1.5) drop-shadow(0 0 20px rgba(139, 92, 246, 0.9))',
+                {/* Golden Ring System */}
+                <div className="relative w-40 h-40 md:w-64 md:h-64 mx-auto">
+                  {/* Main Golden Ring */}
+                  <svg className="absolute inset-0 w-full h-full" style={{ animation: 'spin 25s linear infinite' }}>
+                    <defs>
+                      <linearGradient id="goldGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style={{ stopColor: '#FFD700', stopOpacity: 1 }} />
+                        <stop offset="50%" style={{ stopColor: '#FFA500', stopOpacity: 1 }} />
+                        <stop offset="100%" style={{ stopColor: '#FF8C00', stopOpacity: 1 }} />
+                      </linearGradient>
+                      <filter id="glow">
+                        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                        <feMerge>
+                          <feMergeNode in="coloredBlur"/>
+                          <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                      </filter>
+                    </defs>
+                    <circle 
+                      cx="50%" 
+                      cy="50%" 
+                      r="45%" 
+                      fill="none" 
+                      stroke="url(#goldGradient1)" 
+                      strokeWidth="8"
+                      filter="url(#glow)"
+                      style={{ 
+                        filter: 'drop-shadow(0 0 30px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 60px rgba(255, 165, 0, 0.6))'
                       }}
                     />
-                  </div>
+                  </svg>
                   
-                  {/* Particle Effects */}
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 blur-xl animate-pulse" />
+                  {/* Secondary Rotating Ring */}
+                  <svg className="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)]" style={{ animation: 'spin 18s linear infinite reverse' }}>
+                    <defs>
+                      <linearGradient id="goldGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style={{ stopColor: '#FFD700', stopOpacity: 0.8 }} />
+                        <stop offset="100%" style={{ stopColor: '#FFA500', stopOpacity: 0.8 }} />
+                      </linearGradient>
+                    </defs>
+                    <circle 
+                      cx="50%" 
+                      cy="50%" 
+                      r="45%" 
+                      fill="none" 
+                      stroke="url(#goldGradient2)" 
+                      strokeWidth="5"
+                      style={{ 
+                        filter: 'drop-shadow(0 0 20px rgba(255, 165, 0, 0.9))'
+                      }}
+                    />
+                  </svg>
+                  
+                  {/* Inner Ring */}
+                  <svg className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)]" style={{ animation: 'spin 12s linear infinite' }}>
+                    <circle 
+                      cx="50%" 
+                      cy="50%" 
+                      r="45%" 
+                      fill="none" 
+                      stroke="#FFD700" 
+                      strokeWidth="3"
+                      opacity="0.6"
+                      style={{ 
+                        filter: 'drop-shadow(0 0 15px rgba(255, 215, 0, 1))'
+                      }}
+                    />
+                  </svg>
+                  
+                  {/* Center Glow */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-20 h-20 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-yellow-500/30 via-amber-400/20 to-orange-500/30 blur-2xl animate-pulse" />
+                  </div>
                 </div>
               </div>
             </div>
