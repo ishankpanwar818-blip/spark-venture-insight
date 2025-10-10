@@ -68,84 +68,92 @@ const Index = () => {
         
         <div className="relative z-10 container mx-auto px-4 py-32 md:py-40">
           <div className="max-w-5xl mx-auto text-center">
-            {/* Pure Golden Ring - Meta Style */}
+            {/* Golden Spiked Ring - Like Reference */}
             <div className="mb-12 floating relative">
               <div className="relative inline-block">
                 {/* Outer Glow */}
                 <div className="absolute inset-0 blur-[100px] bg-gradient-to-r from-yellow-500/60 via-amber-400/60 to-orange-500/60 rounded-full animate-pulse" />
                 
-                {/* Golden Ring System */}
+                {/* Golden Ring with Spikes System */}
                 <div className="relative w-40 h-40 md:w-64 md:h-64 mx-auto">
-                  {/* Main Golden Ring */}
-                  <svg className="absolute inset-0 w-full h-full" style={{ animation: 'spin 25s linear infinite' }}>
+                  {/* Main Spiked Ring */}
+                  <svg className="absolute inset-0 w-full h-full" style={{ animation: 'spin 20s linear infinite' }} viewBox="0 0 200 200">
                     <defs>
-                      <linearGradient id="goldGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" style={{ stopColor: '#FFD700', stopOpacity: 1 }} />
                         <stop offset="50%" style={{ stopColor: '#FFA500', stopOpacity: 1 }} />
-                        <stop offset="100%" style={{ stopColor: '#FF8C00', stopOpacity: 1 }} />
+                        <stop offset="100%" style={{ stopColor: '#DAA520', stopOpacity: 1 }} />
                       </linearGradient>
-                      <filter id="glow">
-                        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                      <filter id="goldGlow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
                         <feMerge>
                           <feMergeNode in="coloredBlur"/>
                           <feMergeNode in="SourceGraphic"/>
                         </feMerge>
                       </filter>
                     </defs>
+                    
+                    {/* Ring Circle */}
                     <circle 
-                      cx="50%" 
-                      cy="50%" 
-                      r="45%" 
+                      cx="100" 
+                      cy="100" 
+                      r="70" 
                       fill="none" 
-                      stroke="url(#goldGradient1)" 
-                      strokeWidth="8"
-                      filter="url(#glow)"
+                      stroke="url(#goldGradient)" 
+                      strokeWidth="12"
+                      filter="url(#goldGlow)"
                       style={{ 
-                        filter: 'drop-shadow(0 0 30px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 60px rgba(255, 165, 0, 0.6))'
+                        filter: 'drop-shadow(0 0 25px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 50px rgba(255, 165, 0, 0.7))'
                       }}
                     />
+                    
+                    {/* Radiating Spikes - 16 spikes around the ring */}
+                    {Array.from({ length: 16 }).map((_, i) => {
+                      const angle = (i * 360) / 16;
+                      const radians = (angle * Math.PI) / 180;
+                      const innerX = 100 + Math.cos(radians) * 76;
+                      const innerY = 100 + Math.sin(radians) * 76;
+                      const outerX = 100 + Math.cos(radians) * 95;
+                      const outerY = 100 + Math.sin(radians) * 95;
+                      
+                      return (
+                        <line
+                          key={i}
+                          x1={innerX}
+                          y1={innerY}
+                          x2={outerX}
+                          y2={outerY}
+                          stroke="url(#goldGradient)"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          style={{ 
+                            filter: 'drop-shadow(0 0 8px rgba(255, 215, 0, 1))',
+                            opacity: 0.9
+                          }}
+                        />
+                      );
+                    })}
                   </svg>
                   
-                  {/* Secondary Rotating Ring */}
-                  <svg className="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)]" style={{ animation: 'spin 18s linear infinite reverse' }}>
-                    <defs>
-                      <linearGradient id="goldGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style={{ stopColor: '#FFD700', stopOpacity: 0.8 }} />
-                        <stop offset="100%" style={{ stopColor: '#FFA500', stopOpacity: 0.8 }} />
-                      </linearGradient>
-                    </defs>
+                  {/* Secondary Inner Ring */}
+                  <svg className="absolute inset-0 w-full h-full" style={{ animation: 'spin 15s linear infinite reverse' }} viewBox="0 0 200 200">
                     <circle 
-                      cx="50%" 
-                      cy="50%" 
-                      r="45%" 
-                      fill="none" 
-                      stroke="url(#goldGradient2)" 
-                      strokeWidth="5"
-                      style={{ 
-                        filter: 'drop-shadow(0 0 20px rgba(255, 165, 0, 0.9))'
-                      }}
-                    />
-                  </svg>
-                  
-                  {/* Inner Ring */}
-                  <svg className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)]" style={{ animation: 'spin 12s linear infinite' }}>
-                    <circle 
-                      cx="50%" 
-                      cy="50%" 
-                      r="45%" 
+                      cx="100" 
+                      cy="100" 
+                      r="60" 
                       fill="none" 
                       stroke="#FFD700" 
-                      strokeWidth="3"
+                      strokeWidth="4"
                       opacity="0.6"
                       style={{ 
-                        filter: 'drop-shadow(0 0 15px rgba(255, 215, 0, 1))'
+                        filter: 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))'
                       }}
                     />
                   </svg>
                   
                   {/* Center Glow */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-20 h-20 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-yellow-500/30 via-amber-400/20 to-orange-500/30 blur-2xl animate-pulse" />
+                    <div className="w-24 h-24 md:w-36 md:h-36 rounded-full bg-gradient-to-br from-yellow-500/40 via-amber-400/30 to-orange-500/40 blur-3xl animate-pulse" />
                   </div>
                 </div>
               </div>
