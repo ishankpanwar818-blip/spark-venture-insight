@@ -151,9 +151,20 @@ const Index = () => {
                     />
                   </svg>
                   
-                  {/* Center Glow */}
+                  {/* Center Silver Bat */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-24 h-24 md:w-36 md:h-36 rounded-full bg-gradient-to-br from-yellow-500/40 via-amber-400/30 to-orange-500/40 blur-3xl animate-pulse" />
+                    {/* Background Glow */}
+                    <div className="absolute w-24 h-24 md:w-36 md:h-36 rounded-full bg-gradient-to-br from-slate-300/40 via-gray-200/30 to-slate-400/40 blur-3xl animate-pulse" />
+                    
+                    {/* Silver Shiny Bat */}
+                    <img 
+                      src={echodftLogo} 
+                      alt="EchoDFT Bat" 
+                      className="relative w-16 h-16 md:w-24 md:h-24 z-10"
+                      style={{
+                        filter: 'brightness(1.8) contrast(1.3) saturate(0) drop-shadow(0 0 20px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 40px rgba(192, 192, 192, 0.8)) drop-shadow(0 0 60px rgba(169, 169, 169, 0.6))',
+                      }}
+                    />
                   </div>
                 </div>
               </div>
