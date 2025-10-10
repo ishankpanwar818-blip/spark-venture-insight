@@ -151,48 +151,9 @@ const Index = () => {
                     />
                   </svg>
                   
-                  {/* Center Bat Silhouette - Embedded as Shadow */}
+                  {/* Clean Center - Just Glow */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    {/* Layered Bat Shadow Effect */}
-                    <div className="relative w-20 h-20 md:w-28 md:h-28">
-                      {/* Deep shadow layer */}
-                      <div 
-                        className="absolute inset-0 opacity-40"
-                        style={{
-                          backgroundImage: `url(${echodftLogo})`,
-                          backgroundSize: 'contain',
-                          backgroundPosition: 'center',
-                          backgroundRepeat: 'no-repeat',
-                          filter: 'brightness(0) blur(2px)',
-                        }}
-                      />
-                      {/* Mid shadow layer */}
-                      <div 
-                        className="absolute inset-0 opacity-30"
-                        style={{
-                          backgroundImage: `url(${echodftLogo})`,
-                          backgroundSize: 'contain',
-                          backgroundPosition: 'center',
-                          backgroundRepeat: 'no-repeat',
-                          filter: 'brightness(0.2) blur(4px)',
-                          transform: 'scale(1.1)',
-                        }}
-                      />
-                      {/* Subtle glow layer */}
-                      <div 
-                        className="absolute inset-0 opacity-20"
-                        style={{
-                          backgroundImage: `url(${echodftLogo})`,
-                          backgroundSize: 'contain',
-                          backgroundPosition: 'center',
-                          backgroundRepeat: 'no-repeat',
-                          filter: 'brightness(0.5) blur(8px)',
-                          transform: 'scale(1.2)',
-                        }}
-                      />
-                      {/* Center ambient glow */}
-                      <div className="absolute inset-0 bg-gradient-radial from-slate-400/10 via-transparent to-transparent blur-xl" />
-                    </div>
+                    <div className="w-20 h-20 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-yellow-500/20 via-amber-400/10 to-orange-500/20 blur-2xl" />
                   </div>
                 </div>
               </div>
