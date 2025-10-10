@@ -151,20 +151,48 @@ const Index = () => {
                     />
                   </svg>
                   
-                  {/* Center Silver Bat */}
+                  {/* Center Bat Silhouette - Embedded as Shadow */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    {/* Background Glow */}
-                    <div className="absolute w-24 h-24 md:w-36 md:h-36 rounded-full bg-gradient-to-br from-slate-300/40 via-gray-200/30 to-slate-400/40 blur-3xl animate-pulse" />
-                    
-                    {/* Silver Shiny Bat */}
-                    <img 
-                      src={echodftLogo} 
-                      alt="EchoDFT Bat" 
-                      className="relative w-16 h-16 md:w-24 md:h-24 z-10"
-                      style={{
-                        filter: 'brightness(1.8) contrast(1.3) saturate(0) drop-shadow(0 0 20px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 40px rgba(192, 192, 192, 0.8)) drop-shadow(0 0 60px rgba(169, 169, 169, 0.6))',
-                      }}
-                    />
+                    {/* Layered Bat Shadow Effect */}
+                    <div className="relative w-20 h-20 md:w-28 md:h-28">
+                      {/* Deep shadow layer */}
+                      <div 
+                        className="absolute inset-0 opacity-40"
+                        style={{
+                          backgroundImage: `url(${echodftLogo})`,
+                          backgroundSize: 'contain',
+                          backgroundPosition: 'center',
+                          backgroundRepeat: 'no-repeat',
+                          filter: 'brightness(0) blur(2px)',
+                        }}
+                      />
+                      {/* Mid shadow layer */}
+                      <div 
+                        className="absolute inset-0 opacity-30"
+                        style={{
+                          backgroundImage: `url(${echodftLogo})`,
+                          backgroundSize: 'contain',
+                          backgroundPosition: 'center',
+                          backgroundRepeat: 'no-repeat',
+                          filter: 'brightness(0.2) blur(4px)',
+                          transform: 'scale(1.1)',
+                        }}
+                      />
+                      {/* Subtle glow layer */}
+                      <div 
+                        className="absolute inset-0 opacity-20"
+                        style={{
+                          backgroundImage: `url(${echodftLogo})`,
+                          backgroundSize: 'contain',
+                          backgroundPosition: 'center',
+                          backgroundRepeat: 'no-repeat',
+                          filter: 'brightness(0.5) blur(8px)',
+                          transform: 'scale(1.2)',
+                        }}
+                      />
+                      {/* Center ambient glow */}
+                      <div className="absolute inset-0 bg-gradient-radial from-slate-400/10 via-transparent to-transparent blur-xl" />
+                    </div>
                   </div>
                 </div>
               </div>
