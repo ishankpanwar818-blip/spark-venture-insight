@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, TrendingUp, Search, Zap, Globe, MousePointer2 } from 'lucide-react';
 import echodftLogo from '@/assets/echodft-logo.png';
+import ringLogo from '@/assets/ring-logo.png';
 import { useState, useEffect } from 'react';
 
 const Index = () => {
@@ -21,7 +22,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background overflow-hidden">
+    <div className="min-h-screen bg-black overflow-hidden">
       {/* Hero Section with 3D Bat Background */}
       <section className="relative min-h-screen overflow-hidden">
         {/* Animated Mesh Gradient Background */}
@@ -52,7 +53,7 @@ const Index = () => {
         <nav className="relative z-50 glass-strong border-b border-border/50">
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <img 
-              src={echodftLogo} 
+              src={ringLogo} 
               alt="EchoDFT" 
               className="w-12 h-12 drop-shadow-[0_0_20px_rgba(66,153,225,0.8)]"
             />
@@ -68,93 +69,24 @@ const Index = () => {
         
         <div className="relative z-10 container mx-auto px-4 py-32 md:py-40">
           <div className="max-w-5xl mx-auto text-center">
-            {/* Golden Spiked Ring - Like Reference */}
+            {/* Ring Logo with Blue Glow */}
             <div className="mb-12 floating relative">
               <div className="relative inline-block">
-                {/* Outer Glow */}
-                <div className="absolute inset-0 blur-[100px] bg-gradient-to-r from-yellow-500/60 via-amber-400/60 to-orange-500/60 rounded-full animate-pulse" />
+                {/* Blue Outer Glow */}
+                <div className="absolute inset-0 blur-[100px] bg-gradient-to-r from-blue-500/60 via-cyan-400/60 to-blue-600/60 rounded-full animate-pulse" />
                 
-                {/* Golden Ring with Spikes System */}
-                <div className="relative w-40 h-40 md:w-64 md:h-64 mx-auto">
-                  {/* Main Spiked Ring */}
-                  <svg className="absolute inset-0 w-full h-full" style={{ animation: 'spin 20s linear infinite' }} viewBox="0 0 200 200">
-                    <defs>
-                      <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style={{ stopColor: '#FFD700', stopOpacity: 1 }} />
-                        <stop offset="50%" style={{ stopColor: '#FFA500', stopOpacity: 1 }} />
-                        <stop offset="100%" style={{ stopColor: '#DAA520', stopOpacity: 1 }} />
-                      </linearGradient>
-                      <filter id="goldGlow">
-                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                        <feMerge>
-                          <feMergeNode in="coloredBlur"/>
-                          <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                      </filter>
-                    </defs>
-                    
-                    {/* Ring Circle */}
-                    <circle 
-                      cx="100" 
-                      cy="100" 
-                      r="70" 
-                      fill="none" 
-                      stroke="url(#goldGradient)" 
-                      strokeWidth="12"
-                      filter="url(#goldGlow)"
-                      style={{ 
-                        filter: 'drop-shadow(0 0 25px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 50px rgba(255, 165, 0, 0.7))'
-                      }}
-                    />
-                    
-                    {/* Radiating Spikes - 16 spikes around the ring */}
-                    {Array.from({ length: 16 }).map((_, i) => {
-                      const angle = (i * 360) / 16;
-                      const radians = (angle * Math.PI) / 180;
-                      const innerX = 100 + Math.cos(radians) * 76;
-                      const innerY = 100 + Math.sin(radians) * 76;
-                      const outerX = 100 + Math.cos(radians) * 95;
-                      const outerY = 100 + Math.sin(radians) * 95;
-                      
-                      return (
-                        <line
-                          key={i}
-                          x1={innerX}
-                          y1={innerY}
-                          x2={outerX}
-                          y2={outerY}
-                          stroke="url(#goldGradient)"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          style={{ 
-                            filter: 'drop-shadow(0 0 8px rgba(255, 215, 0, 1))',
-                            opacity: 0.9
-                          }}
-                        />
-                      );
-                    })}
-                  </svg>
-                  
-                  {/* Secondary Inner Ring */}
-                  <svg className="absolute inset-0 w-full h-full" style={{ animation: 'spin 15s linear infinite reverse' }} viewBox="0 0 200 200">
-                    <circle 
-                      cx="100" 
-                      cy="100" 
-                      r="60" 
-                      fill="none" 
-                      stroke="#FFD700" 
-                      strokeWidth="4"
-                      opacity="0.6"
-                      style={{ 
-                        filter: 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))'
-                      }}
-                    />
-                  </svg>
-                  
-                  {/* Clean Center - Just Glow */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-20 h-20 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-yellow-500/20 via-amber-400/10 to-orange-500/20 blur-2xl" />
-                  </div>
+                {/* Ring Logo */}
+                <div className="relative w-48 h-48 md:w-80 md:h-80 mx-auto flex items-center justify-center">
+                  <img 
+                    src={ringLogo} 
+                    alt="EchoDFT Ring" 
+                    className="w-full h-full object-contain drop-shadow-[0_0_40px_rgba(66,153,225,0.9)] drop-shadow-[0_0_80px_rgba(66,153,225,0.7)]"
+                    style={{
+                      filter: 'drop-shadow(0 0 100px rgba(66, 153, 225, 0.8))'
+                    }}
+                  />
+                  {/* Additional Blue Glow */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-cyan-400/10 to-blue-600/20 blur-3xl rounded-full" />
                 </div>
               </div>
             </div>
