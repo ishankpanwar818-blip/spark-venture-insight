@@ -164,15 +164,18 @@ Base your analysis on realistic estimates for a company with domain ${domain}. B
     }
 
     const data = await response.json();
-    const analysisText = data.choices[0].message.content;
+    let analysisText = data.choices[0].message.content;
     
     console.log('Analysis received, parsing JSON...');
+    
+    // Strip markdown code blocks if present
+    analysisText = analysisText.replace(/^```json?\n?/i, '').replace(/\n?```\s*$/i, '').trim();
     
     let analysis;
     try {
       analysis = JSON.parse(analysisText);
     } catch (parseError) {
-      console.error('Failed to parse AI response:', analysisText);
+      console.error('Failed to parse AI response:', analysisText.substring(0, 500));
       throw new Error('Failed to parse AI analysis');
     }
 
