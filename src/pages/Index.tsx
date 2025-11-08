@@ -161,7 +161,7 @@ const Index = () => {
             </div>
             
             {/* Holographic Title */}
-            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight transform-3d">
+            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-normal transform-3d">
               <span className="inline-block holographic bg-clip-text text-transparent drop-shadow-2xl">
                 Echo the Insight.
               </span>
