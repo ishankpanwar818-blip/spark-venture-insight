@@ -172,7 +172,7 @@ const Index = () => {
             </h1>
             
             <p className="text-xl md:text-3xl text-foreground/90 mb-12 max-w-3xl mx-auto font-light backdrop-blur-sm">
-              AI-powered company analysis that reveals the blueprint behind successful businesses
+              AI-powered software company analysis that reveals the blueprint behind successful businesses
             </p>
             
             {/* Glass CTA Buttons */}
@@ -210,7 +210,7 @@ const Index = () => {
             Everything You Need to Validate Ideas
           </h2>
           <p className="text-xl md:text-2xl text-foreground/80 max-w-3xl mx-auto font-light">
-            Get comprehensive insights into any company with just their URL
+            Get comprehensive insights into any software company with just their URL
           </p>
         </div>
 
