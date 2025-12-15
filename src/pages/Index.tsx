@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, TrendingUp, Search, Zap, Globe, MousePointer2 } from 'lucide-react';
+import { Sparkles, TrendingUp, Search, Zap, Globe, MousePointer2, Instagram, ExternalLink, BadgeCheck } from 'lucide-react';
 import echodftLogo from '@/assets/echodft-logo.png';
 import ringLogo from '@/assets/ring-logo.png';
 import { useState, useEffect } from 'react';
@@ -298,6 +298,68 @@ const Index = () => {
           </CardContent>
         </Card>
       </section>
+
+      {/* Professional Footer */}
+      <footer className="relative border-t border-border/30 bg-black/50 backdrop-blur-xl">
+        <div className="container mx-auto px-4 py-12">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            {/* Logo & Verification */}
+            <div className="flex flex-col items-center md:items-start gap-4">
+              <div className="flex items-center gap-3">
+                <img 
+                  src={ringLogo} 
+                  alt="EchoDFT" 
+                  className="w-10 h-10 drop-shadow-[0_0_15px_rgba(66,153,225,0.6)]"
+                />
+                <span className="text-xl font-semibold text-foreground">EchoDFT</span>
+              </div>
+              
+              {/* Verified Badge */}
+              <div className="flex items-center gap-2 glass-card px-4 py-2 rounded-full border border-primary/30">
+                <BadgeCheck className="w-5 h-5 text-primary drop-shadow-[0_0_8px_rgba(66,153,225,0.8)]" />
+                <span className="text-sm text-foreground/80">Verified & Owned by</span>
+                <a 
+                  href="https://thebatorg.netlify.app/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+                >
+                  BAT Org.
+                </a>
+              </div>
+            </div>
+
+            {/* Social Links */}
+            <div className="flex items-center gap-4">
+              <a 
+                href="https://www.instagram.com/echodft.app/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="glass-card p-3 rounded-full border border-border/30 hover:border-primary/50 hover:shadow-[0_0_20px_rgba(66,153,225,0.4)] transition-all duration-300 group"
+              >
+                <Instagram className="w-5 h-5 text-foreground/70 group-hover:text-primary transition-colors" />
+              </a>
+              
+              <a 
+                href="https://thebatorg.netlify.app/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="glass-card flex items-center gap-2 px-4 py-3 rounded-full border border-border/30 hover:border-primary/50 hover:shadow-[0_0_20px_rgba(66,153,225,0.4)] transition-all duration-300 group"
+              >
+                <ExternalLink className="w-4 h-4 text-foreground/70 group-hover:text-primary transition-colors" />
+                <span className="text-sm text-foreground/70 group-hover:text-primary transition-colors">BAT Org.</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Copyright */}
+          <div className="mt-8 pt-6 border-t border-border/20 text-center">
+            <p className="text-sm text-foreground/50">
+              © {new Date().getFullYear()} EchoDFT. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
