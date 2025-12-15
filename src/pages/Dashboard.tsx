@@ -20,6 +20,8 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import AnimatedBackground from '@/components/3d/AnimatedBackground';
+import AnalysisOrb from '@/components/3d/AnalysisOrb';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -255,7 +257,9 @@ const { toast } = useToast();
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* 3D Animated Background */}
+      <AnimatedBackground />
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -309,7 +313,7 @@ const { toast } = useToast();
                 variant="gradient"
                 size="lg"
               >
-                {loading ? (
+              {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     Analyzing...
@@ -322,6 +326,19 @@ const { toast } = useToast();
                 )}
               </Button>
             </div>
+
+            {/* 3D Analysis Orb - shows during loading */}
+            {loading && (
+              <div className="flex flex-col items-center justify-center py-8 animate-fade-in">
+                <AnalysisOrb isLoading={true} className="w-48 h-48" />
+                <p className="text-muted-foreground mt-4 text-center">
+                  Gathering real data and analyzing with AI...
+                </p>
+                <p className="text-xs text-muted-foreground/70 mt-1">
+                  This may take 30-45 seconds for accurate results
+                </p>
+              </div>
+            )}
             
             <div className="flex items-center gap-4 flex-wrap">
               <Button
