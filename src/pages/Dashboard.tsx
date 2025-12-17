@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { AnimatedCard, AnimatedCardHeader, AnimatedCardTitle, AnimatedCardDescription, AnimatedCardContent } from '@/components/ui/animated-card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import echodftLogo from '@/assets/echodft-logo.png';
@@ -457,12 +458,12 @@ const { toast } = useToast();
         {analysis && (
           <div className="space-y-6">
             {/* Company Header */}
-            <Card className="shadow-card">
-              <CardHeader>
+            <AnimatedCard index={0} hover="glow" className="shadow-card">
+              <AnimatedCardHeader>
                 <div className="flex items-start justify-between">
                   <div>
-                    <CardTitle className="text-3xl mb-2">{analysis.company.name}</CardTitle>
-                    <CardDescription className="text-base">{analysis.company.description}</CardDescription>
+                    <AnimatedCardTitle className="text-3xl mb-2">{analysis.company.name}</AnimatedCardTitle>
+                    <AnimatedCardDescription className="text-base">{analysis.company.description}</AnimatedCardDescription>
                     <div className="flex gap-2 mt-3">
                       <Badge variant="default">{analysis.company.industry}</Badge>
                       <Badge variant="outline">{analysis.company.businessModel}</Badge>
@@ -473,19 +474,19 @@ const { toast } = useToast();
                     New Analysis
                   </Button>
                 </div>
-              </CardHeader>
-            </Card>
+              </AnimatedCardHeader>
+            </AnimatedCard>
 
             {/* Key Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card className="hover:shadow-[var(--shadow-glow)] transition-all">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <Users className="w-4 h-4" />
+              <AnimatedCard index={1} hover="lift" className="metric-pulse group cursor-pointer">
+                <AnimatedCardHeader className="pb-3">
+                  <AnimatedCardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <Users className="w-4 h-4 group-hover:text-primary transition-colors" />
                     Monthly Traffic
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </AnimatedCardTitle>
+                </AnimatedCardHeader>
+                <AnimatedCardContent>
                   <div className="text-3xl font-bold text-primary">{formatNumber(analysis.traffic.monthlyVisitors)}</div>
                   <div className="flex items-center gap-1 mt-1">
                     <TrendingUp className="w-3 h-3 text-accent" />
@@ -494,17 +495,17 @@ const { toast } = useToast();
                   <p className="text-xs text-muted-foreground mt-1">
                     {analysis.traffic.organicTraffic}% organic • {analysis.traffic.paidTraffic}% paid
                   </p>
-                </CardContent>
-              </Card>
+                </AnimatedCardContent>
+              </AnimatedCard>
 
-              <Card className="hover:shadow-[var(--shadow-glow)] transition-all">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <DollarSign className="w-4 h-4" />
+              <AnimatedCard index={2} hover="lift" className="metric-pulse group cursor-pointer">
+                <AnimatedCardHeader className="pb-3">
+                  <AnimatedCardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 group-hover:text-accent transition-colors" />
                     Estimated MRR
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </AnimatedCardTitle>
+                </AnimatedCardHeader>
+                <AnimatedCardContent>
                   <div className="text-3xl font-bold text-accent">{formatCurrency(analysis.revenue.estimatedMRR)}</div>
                   <div className="flex items-center gap-1 mt-1">
                     <TrendingUp className="w-3 h-3 text-accent" />
@@ -513,17 +514,17 @@ const { toast } = useToast();
                   <p className="text-xs text-muted-foreground mt-1">
                     ARR: {formatCurrency(analysis.revenue.estimatedARR)}
                   </p>
-                </CardContent>
-              </Card>
+                </AnimatedCardContent>
+              </AnimatedCard>
 
-              <Card className="hover:shadow-[var(--shadow-glow)] transition-all">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <Target className="w-4 h-4" />
+              <AnimatedCard index={3} hover="lift" className="metric-pulse group cursor-pointer">
+                <AnimatedCardHeader className="pb-3">
+                  <AnimatedCardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <Target className="w-4 h-4 group-hover:text-primary transition-colors" />
                     Domain Authority
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </AnimatedCardTitle>
+                </AnimatedCardHeader>
+                <AnimatedCardContent>
                   <div className="text-3xl font-bold">{analysis.seo.domainAuthority}/100</div>
                   <p className="text-xs text-muted-foreground mt-1">
                     {analysis.seo.domainAge} years old
@@ -531,17 +532,17 @@ const { toast } = useToast();
                   <p className="text-xs text-muted-foreground">
                     {formatNumber(analysis.seo.backlinks)} backlinks
                   </p>
-                </CardContent>
-              </Card>
+                </AnimatedCardContent>
+              </AnimatedCard>
 
-              <Card className="hover:shadow-[var(--shadow-glow)] transition-all">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <Award className="w-4 h-4" />
+              <AnimatedCard index={4} hover="lift" className="metric-pulse group cursor-pointer">
+                <AnimatedCardHeader className="pb-3">
+                  <AnimatedCardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <Award className="w-4 h-4 group-hover:text-primary transition-colors" />
                     Market Position
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </AnimatedCardTitle>
+                </AnimatedCardHeader>
+                <AnimatedCardContent>
                   <div className="text-2xl font-bold">{analysis.competition.marketPosition}</div>
                   <p className="text-xs text-muted-foreground mt-1">
                     {analysis.competition.marketShare} market share
@@ -549,20 +550,20 @@ const { toast } = useToast();
                   <p className="text-xs text-muted-foreground">
                     TAM: {analysis.competition.marketSize}
                   </p>
-                </CardContent>
-              </Card>
+                </AnimatedCardContent>
+              </AnimatedCard>
             </div>
 
             {/* Charts Row 1 */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+              <AnimatedCard index={5} hover="glow" className="interactive-card">
+                <AnimatedCardHeader>
+                  <AnimatedCardTitle className="flex items-center gap-2">
                     <TrendingUp className="w-5 h-5" />
                     Traffic & Engagement Growth
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </AnimatedCardTitle>
+                </AnimatedCardHeader>
+                <AnimatedCardContent>
                   <ResponsiveContainer width="100%" height={300}>
                     <AreaChart data={generateTrafficData()}>
                       <defs>
@@ -584,17 +585,17 @@ const { toast } = useToast();
                       <Area type="monotone" dataKey="pageViews" stroke="hsl(var(--accent))" fillOpacity={1} fill="url(#colorPageViews)" name="Page Views (M)" />
                     </AreaChart>
                   </ResponsiveContainer>
-                </CardContent>
-              </Card>
+                </AnimatedCardContent>
+              </AnimatedCard>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+              <AnimatedCard index={6} hover="glow" className="interactive-card">
+                <AnimatedCardHeader>
+                  <AnimatedCardTitle className="flex items-center gap-2">
                     <DollarSign className="w-5 h-5" />
                     Revenue Growth Trajectory
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </AnimatedCardTitle>
+                </AnimatedCardHeader>
+                <AnimatedCardContent>
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={generateRevenueData()}>
                       <CartesianGrid strokeDasharray="3 3" />
@@ -606,17 +607,17 @@ const { toast } = useToast();
                       <Bar dataKey="arr" fill="hsl(var(--primary))" name="ARR ($K)" />
                     </BarChart>
                   </ResponsiveContainer>
-                </CardContent>
-              </Card>
+                </AnimatedCardContent>
+              </AnimatedCard>
             </div>
 
             {/* Charts Row 2 */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Technology Stack Distribution</CardTitle>
-                </CardHeader>
-                <CardContent>
+              <AnimatedCard index={7} hover="glow" className="interactive-card">
+                <AnimatedCardHeader>
+                  <AnimatedCardTitle>Technology Stack Distribution</AnimatedCardTitle>
+                </AnimatedCardHeader>
+                <AnimatedCardContent>
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
@@ -636,14 +637,14 @@ const { toast } = useToast();
                       <Tooltip />
                     </PieChart>
                   </ResponsiveContainer>
-                </CardContent>
-              </Card>
+                </AnimatedCardContent>
+              </AnimatedCard>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Competitive Analysis Radar</CardTitle>
-                </CardHeader>
-                <CardContent>
+              <AnimatedCard index={8} hover="glow" className="interactive-card">
+                <AnimatedCardHeader>
+                  <AnimatedCardTitle>Competitive Analysis Radar</AnimatedCardTitle>
+                </AnimatedCardHeader>
+                <AnimatedCardContent>
                   <ResponsiveContainer width="100%" height={300}>
                     <RadarChart data={generateCompetitionRadar()}>
                       <PolarGrid />
@@ -653,76 +654,76 @@ const { toast } = useToast();
                       <Tooltip />
                     </RadarChart>
                   </ResponsiveContainer>
-                </CardContent>
-              </Card>
+                </AnimatedCardContent>
+              </AnimatedCard>
             </div>
 
             {/* 3D Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="overflow-hidden">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+              <AnimatedCard index={9} hover="border" className="overflow-hidden interactive-card">
+                <AnimatedCardHeader>
+                  <AnimatedCardTitle className="flex items-center gap-2">
                     <TrendingUp className="w-5 h-5" />
                     3D Traffic Visualization
-                  </CardTitle>
-                  <CardDescription>Interactive 3D view of visitor and page view trends</CardDescription>
-                </CardHeader>
-                <CardContent>
+                  </AnimatedCardTitle>
+                  <AnimatedCardDescription>Interactive 3D view of visitor and page view trends</AnimatedCardDescription>
+                </AnimatedCardHeader>
+                <AnimatedCardContent>
                   <Traffic3DChart data={generateTrafficData()} className="h-[350px] w-full" />
-                </CardContent>
-              </Card>
+                </AnimatedCardContent>
+              </AnimatedCard>
 
-              <Card className="overflow-hidden">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+              <AnimatedCard index={10} hover="border" className="overflow-hidden interactive-card">
+                <AnimatedCardHeader>
+                  <AnimatedCardTitle className="flex items-center gap-2">
                     <DollarSign className="w-5 h-5" />
                     3D Revenue Visualization
-                  </CardTitle>
-                  <CardDescription>Circular 3D chart showing MRR and ARR growth</CardDescription>
-                </CardHeader>
-                <CardContent>
+                  </AnimatedCardTitle>
+                  <AnimatedCardDescription>Circular 3D chart showing MRR and ARR growth</AnimatedCardDescription>
+                </AnimatedCardHeader>
+                <AnimatedCardContent>
                   <Revenue3DChart data={generateRevenueData()} className="h-[350px] w-full" />
-                </CardContent>
-              </Card>
+                </AnimatedCardContent>
+              </AnimatedCard>
             </div>
 
             {/* Detailed Info Sections */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Tech Stack */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+              <AnimatedCard index={11} hover="scale" className="interactive-card">
+                <AnimatedCardHeader>
+                  <AnimatedCardTitle className="flex items-center gap-2">
                     <BarChart3 className="w-5 h-5" />
                     Complete Tech Stack
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </AnimatedCardTitle>
+                </AnimatedCardHeader>
+                <AnimatedCardContent>
                   <div className="space-y-4">
                     {Object.entries(analysis.techStack).map(([category, tools]: [string, any]) => (
-                      <div key={category}>
-                        <h4 className="font-semibold text-sm mb-2 capitalize">{category}</h4>
+                      <div key={category} className="group">
+                        <h4 className="font-semibold text-sm mb-2 capitalize group-hover:text-primary transition-colors">{category}</h4>
                         <div className="flex flex-wrap gap-2">
                           {Array.isArray(tools) && tools.map((tech: string) => (
-                            <Badge key={tech} variant="outline">{tech}</Badge>
+                            <Badge key={tech} variant="outline" className="hover:bg-primary/10 hover:border-primary transition-colors cursor-default">{tech}</Badge>
                           ))}
                         </div>
                       </div>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
+                </AnimatedCardContent>
+              </AnimatedCard>
 
               {/* Social Presence */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Social Media Presence</CardTitle>
-                </CardHeader>
-                <CardContent>
+              <AnimatedCard index={12} hover="scale" className="interactive-card">
+                <AnimatedCardHeader>
+                  <AnimatedCardTitle>Social Media Presence</AnimatedCardTitle>
+                </AnimatedCardHeader>
+                <AnimatedCardContent>
                   <div className="space-y-3">
                     {Object.entries(analysis.social).map(([platform, data]: [string, any]) => (
-                      <div key={platform} className="flex items-center justify-between p-2 rounded bg-muted/50">
+                      <div key={platform} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors cursor-pointer group">
                         <div>
-                          <span className="font-semibold capitalize">{platform}</span>
+                          <span className="font-semibold capitalize group-hover:text-primary transition-colors">{platform}</span>
                           <p className="text-xs text-muted-foreground">
                             {data.followers ? formatNumber(data.followers) : formatNumber(data.subscribers || 0)} {data.followers ? 'followers' : 'subscribers'}
                           </p>
@@ -736,28 +737,28 @@ const { toast } = useToast();
                       </div>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
+                </AnimatedCardContent>
+              </AnimatedCard>
             </div>
 
             {/* AI Insights */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <AnimatedCard index={13} hover="glow" className="interactive-card">
+              <AnimatedCardHeader>
+                <AnimatedCardTitle className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5" />
                   AI-Powered SWOT Analysis
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </AnimatedCardTitle>
+              </AnimatedCardHeader>
+              <AnimatedCardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
+                  <div className="p-4 rounded-lg bg-green-500/5 border border-green-500/20 hover:border-green-500/40 transition-colors">
                     <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
                       Strengths
                     </h4>
                     <ul className="space-y-2">
                       {analysis.aiInsights.strengths.map((item: string, i: number) => (
-                        <li key={i} className="text-sm flex items-start gap-2">
+                        <li key={i} className="text-sm flex items-start gap-2 hover:translate-x-1 transition-transform">
                           <span className="text-green-500 mt-0.5">•</span>
                           <span>{item}</span>
                         </li>
@@ -765,14 +766,14 @@ const { toast } = useToast();
                     </ul>
                   </div>
 
-                  <div>
+                  <div className="p-4 rounded-lg bg-red-500/5 border border-red-500/20 hover:border-red-500/40 transition-colors">
                     <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
                       <XCircle className="w-4 h-4 text-red-500" />
                       Weaknesses
                     </h4>
                     <ul className="space-y-2">
                       {analysis.aiInsights.weaknesses.map((item: string, i: number) => (
-                        <li key={i} className="text-sm flex items-start gap-2">
+                        <li key={i} className="text-sm flex items-start gap-2 hover:translate-x-1 transition-transform">
                           <span className="text-red-500 mt-0.5">•</span>
                           <span>{item}</span>
                         </li>
@@ -780,14 +781,14 @@ const { toast } = useToast();
                     </ul>
                   </div>
 
-                  <div>
+                  <div className="p-4 rounded-lg bg-blue-500/5 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
                     <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
                       <Lightbulb className="w-4 h-4 text-blue-500" />
                       Opportunities
                     </h4>
                     <ul className="space-y-2">
                       {analysis.aiInsights.opportunities.map((item: string, i: number) => (
-                        <li key={i} className="text-sm flex items-start gap-2">
+                        <li key={i} className="text-sm flex items-start gap-2 hover:translate-x-1 transition-transform">
                           <span className="text-blue-500 mt-0.5">•</span>
                           <span>{item}</span>
                         </li>
@@ -795,14 +796,14 @@ const { toast } = useToast();
                     </ul>
                   </div>
 
-                  <div>
+                  <div className="p-4 rounded-lg bg-orange-500/5 border border-orange-500/20 hover:border-orange-500/40 transition-colors">
                     <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
                       <AlertTriangle className="w-4 h-4 text-orange-500" />
                       Threats
                     </h4>
                     <ul className="space-y-2">
                       {analysis.aiInsights.threats.map((item: string, i: number) => (
-                        <li key={i} className="text-sm flex items-start gap-2">
+                        <li key={i} className="text-sm flex items-start gap-2 hover:translate-x-1 transition-transform">
                           <span className="text-orange-500 mt-0.5">•</span>
                           <span>{item}</span>
                         </li>
@@ -811,28 +812,28 @@ const { toast } = useToast();
                   </div>
                 </div>
 
-                <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-                  <h4 className="font-semibold text-sm mb-3">Recommended Actions</h4>
+                <div className="mt-6 p-4 bg-primary/5 rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
+                  <h4 className="font-semibold text-sm mb-3 text-primary">Recommended Actions</h4>
                   <ul className="space-y-2">
                     {analysis.aiInsights.recommendedActions.map((action: string, i: number) => (
-                      <li key={i} className="text-sm flex items-start gap-2">
+                      <li key={i} className="text-sm flex items-start gap-2 hover:translate-x-1 transition-transform">
                         <span className="text-primary mt-0.5">→</span>
                         <span>{action}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-              </CardContent>
-            </Card>
+              </AnimatedCardContent>
+            </AnimatedCard>
 
             {/* Competition */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Competitive Landscape</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <AnimatedCard index={14} hover="scale" className="interactive-card">
+              <AnimatedCardHeader>
+                <AnimatedCardTitle>Competitive Landscape</AnimatedCardTitle>
+              </AnimatedCardHeader>
+              <AnimatedCardContent>
                 <div className="space-y-4">
-                  <div>
+                  <div className="p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
                     <h4 className="font-semibold text-sm mb-2">Competitive Advantage</h4>
                     <p className="text-sm text-muted-foreground">{analysis.competition.competitiveAdvantage}</p>
                   </div>
@@ -840,31 +841,31 @@ const { toast } = useToast();
                     <h4 className="font-semibold text-sm mb-2">Main Competitors</h4>
                     <div className="flex flex-wrap gap-2">
                       {analysis.competition.mainCompetitors.map((competitor: string) => (
-                        <Badge key={competitor} variant="outline">{competitor}</Badge>
+                        <Badge key={competitor} variant="outline" className="hover:bg-primary/10 hover:border-primary transition-colors cursor-default">{competitor}</Badge>
                       ))}
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </AnimatedCardContent>
+            </AnimatedCard>
 
             {/* Lovable Prompt */}
-            <Card className="border-2 border-primary/20 shadow-[var(--shadow-glow)]">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-primary" />
+            <AnimatedCard index={15} hover="glow" className="border-2 border-primary/30 shadow-[var(--shadow-glow)] shimmer-bg">
+              <AnimatedCardHeader>
+                <AnimatedCardTitle className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-primary animate-pulse" />
                   Build Your Version with Lovable
-                </CardTitle>
-                <CardDescription>
+                </AnimatedCardTitle>
+                <AnimatedCardDescription>
                   AI-generated prompt to create a similar or improved business
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="p-4 bg-muted/50 rounded-lg mb-4">
+                </AnimatedCardDescription>
+              </AnimatedCardHeader>
+              <AnimatedCardContent>
+                <div className="p-4 bg-muted/50 rounded-lg mb-4 border border-primary/10 hover:border-primary/30 transition-colors">
                   <p className="text-sm whitespace-pre-wrap">{analysis.lovablePrompt}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={copyPrompt} variant="outline" className="flex-1">
+                  <Button onClick={copyPrompt} variant="outline" className="flex-1 hover:border-primary hover:bg-primary/5 transition-all">
                     <Copy className="w-4 h-4 mr-2" />
                     Copy Prompt
                   </Button>
@@ -880,8 +881,8 @@ const { toast } = useToast();
                     Build with Lovable
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </AnimatedCardContent>
+            </AnimatedCard>
           </div>
         )}
       </main>
