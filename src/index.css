@@ -159,3 +159,97 @@ All colors MUST be HSL.
     50% { transform: translateY(-20px) rotateZ(2deg); }
   }
 }
+
+/* Staggered entrance animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes borderGlow {
+  0%, 100% {
+    opacity: 0.5;
+    background-position: 0% 50%;
+  }
+  50% {
+    opacity: 1;
+    background-position: 100% 50%;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out forwards;
+}
+
+.animate-border-glow {
+  animation: borderGlow 3s ease-in-out infinite;
+  background-size: 200% 200%;
+}
+
+/* Interactive card hover effects */
+.interactive-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.interactive-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 20px 40px -15px hsl(var(--primary) / 0.2),
+    0 0 20px hsl(var(--primary) / 0.1);
+}
+
+/* Pulse animation for metrics */
+@keyframes metricPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.metric-pulse:hover {
+  animation: metricPulse 1s ease-in-out infinite;
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(var(--primary) / 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
