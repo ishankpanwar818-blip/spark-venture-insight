@@ -22,6 +22,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import AnimatedBackground from '@/components/3d/AnimatedBackground';
 import AnalysisOrb from '@/components/3d/AnalysisOrb';
+import Traffic3DChart from '@/components/3d/Traffic3DChart';
+import Revenue3DChart from '@/components/3d/Revenue3DChart';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -651,6 +653,35 @@ const { toast } = useToast();
                       <Tooltip />
                     </RadarChart>
                   </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 3D Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="overflow-hidden">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5" />
+                    3D Traffic Visualization
+                  </CardTitle>
+                  <CardDescription>Interactive 3D view of visitor and page view trends</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Traffic3DChart data={generateTrafficData()} className="h-[350px] w-full" />
+                </CardContent>
+              </Card>
+
+              <Card className="overflow-hidden">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <DollarSign className="w-5 h-5" />
+                    3D Revenue Visualization
+                  </CardTitle>
+                  <CardDescription>Circular 3D chart showing MRR and ARR growth</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Revenue3DChart data={generateRevenueData()} className="h-[350px] w-full" />
                 </CardContent>
               </Card>
             </div>
